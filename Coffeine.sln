@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Coffeine", "Coffeine\Coffein.vcxproj", "{CE6794B6-09A7-4798-A51E-DDDAB5568CFD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE6794B6-09A7-4798-A51E-DDDAB5568CFD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CE6794B6-09A7-4798-A51E-DDDAB5568CFD}.Debug|Win32.Build.0 = Debug|Win32
+		{CE6794B6-09A7-4798-A51E-DDDAB5568CFD}.Release|Win32.ActiveCfg = Release|Win32
+		{CE6794B6-09A7-4798-A51E-DDDAB5568CFD}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
