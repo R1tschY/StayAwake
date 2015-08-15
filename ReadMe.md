@@ -9,6 +9,8 @@ Features
 * activate manuelly blocking
 * automated blocking if fullscreen foreground window exists (configurable)
 * start with windows (configurable)
+
+![Screenshot](/doc/Screenshot.png?raw=true "Screenshot of StayAwake in Windows 7")
   
 Licence
 -------
