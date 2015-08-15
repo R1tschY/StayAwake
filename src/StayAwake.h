@@ -1,13 +1,14 @@
-/* Coffeine.h 
+/* 
+ * This file is part of StayAwake.
  *
- *  Copyright (C) 2010,2015  Richard Liebscher
+ *  Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  StayAwake is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  StayAwake is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the GNU General Public License for more details.
@@ -21,21 +22,21 @@
 #include "stdafx.h"
 
 #include "Properties.h"
-#include "PropertiesDialog.h"
 #include "TrayIcon.h"
+#include "Menu.h"
 #include "resource.h"
 
-#define COFFEIN_WINDOW_CLASS L"COFFEIN"
+#define COFFEIN_WINDOW_CLASS L"StayAwakeWindowClass"
 
-class Coffeine
+class StayAwake
 {
-  Coffeine(const Coffeine&);
-  Coffeine& operator=(const Coffeine&);
+  StayAwake(const StayAwake&);
+  StayAwake& operator=(const StayAwake&);
 public:
   static const UINT WM_STATE_CHANGED = WM_USER + 0xC;
 
-  Coffeine(HWND hwnd);
-  ~Coffeine();
+  StayAwake(HWND hwnd);
+  ~StayAwake();
 
   void setAutomatic(bool value);
   bool isAutomaticSet() const { return automatic_; }
@@ -63,13 +64,13 @@ private:
   static void CALLBACK TimerProc(HWND hwnd, UINT msg, UINT_PTR id, DWORD time);
 };
 
-class CoffeineUi
+class StayAwakeUi
 {
-  CoffeineUi(const CoffeineUi&);
-  CoffeineUi& operator=(const CoffeineUi&);
+  StayAwakeUi(const StayAwakeUi&);
+  StayAwakeUi& operator=(const StayAwakeUi&);
 public:
-  CoffeineUi(HINSTANCE hInstance);
-  ~CoffeineUi();
+  StayAwakeUi(HINSTANCE hInstance);
+  ~StayAwakeUi();
 
   HWND getWindow() const { return hwnd_; }
 
@@ -79,24 +80,40 @@ public:
 
   void onStateChanged(bool newstate);
   void onManuellSet(bool value);
+  void onAutostartSet(bool value);
+  void onAutomaticSet(bool value);
+  void onAbout();
 
 private:
-  HINSTANCE hinstance_;
-  std::wstring app_title_;
+  enum PopupEntry {
+    InfoEntry = 1000,
+    // ---
+    OptionsEntry,
+    AutostartEntry,
+    AutomaticEntry,
+    // ---
+    SetManuellEntry,
+    // ---
+    ExitEntry
+  };
 
+  HINSTANCE hinstance_;
   HWND hwnd_;
 
   TrayIcon trayicon_;
-  HMENU popup_menu_;
+  Windows::Menu popup_menu_;
 
-  Coffeine coffein_;
+  StayAwake coffein_;
   Properties properties_;
-  PropertiesDialog properties_dialog_;
 
   LRESULT onMessage(UINT msg, WPARAM wparam, LPARAM lparam);
 
   ATOM registerWindowClass();
   HWND createWindow();
+
+  std::wstring activate_string_;
+  std::wstring deactivate_string_;
+  std::wstring auto_activated_string_;
 
   static LRESULT CALLBACK MessageEntry(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };

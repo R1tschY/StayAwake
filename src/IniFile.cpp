@@ -1,13 +1,14 @@
-/* IniFiles.cpp
+/* 
+ * This file is part of StayAwake.
  *
- *  Copyright (C) 2010, 2015  Richard Liebscher
+ *  Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  StayAwake is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  StayAwake is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the GNU General Public License for more details.
@@ -52,7 +53,7 @@ IniFile::getString(const wchar_t* section, const wchar_t* key, const wchar_t* de
   } while (false); 
 
   if (errno == 0x2) { // File not found
-    handleWindowsError(L"Kann nicht in INI Datei lesen", GetLastError());
+    handleWindowsError(L"Cannot read ini file", GetLastError());
     return defaultvalue;
   }
 
@@ -68,7 +69,7 @@ IniFile::getBoolean(const wchar_t* section, const wchar_t* key, bool defaultvalu
     (defaultvalue)?L"1":L"0", buffer, sizeof(buffer), _filename.c_str());
 
   if (errno == 0x2) { // File not found
-    handleWindowsError(L"Kann nicht in INI Datei lesen", GetLastError());
+    handleWindowsError(L"Cannot read ini file", GetLastError());
     return defaultvalue;
   }
 
@@ -83,12 +84,12 @@ IniFile::getBoolean(const wchar_t* section, const wchar_t* key, bool defaultvalu
     return defaultvalue;
 }
 
-std::list<std::wstring>
+std::vector<std::wstring>
 IniFile::getSections() const {
   wchar_t* buffer;
   DWORD buffersize = 1024;
   DWORD bytes;
-  std::list<std::wstring> l;
+  std::vector<std::wstring> l;
 
   do {    
     buffer = (wchar_t*) alloca(buffersize);
@@ -102,7 +103,7 @@ IniFile::getSections() const {
   } while (false); 
 
   if (errno == 0x2) { // File not found
-    handleWindowsError(L"Kann nicht in INI Datei lesen", GetLastError());
+    handleWindowsError(L"Cannot read ini file", GetLastError());
     return l;
   }
 
@@ -122,7 +123,7 @@ IniFile::setString(const wchar_t* section, const wchar_t* key, const wchar_t* st
   e = WritePrivateProfileStringW(section, key, str, _filename.c_str());
 
   if (e == 0) {
-    handleWindowsError(L"Kann nicht in INI Datei schreiben", GetLastError());
+    handleWindowsError(L"Cannot write ini file", GetLastError());
     return false;
   } else {
     return true;

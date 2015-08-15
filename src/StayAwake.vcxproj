@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{CE6794B6-09A7-4798-A51E-DDDAB5568CFD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Coffein</RootNamespace>
-    <ProjectName>Coffeine</ProjectName>
+    <RootNamespace>StayAwake</RootNamespace>
+    <ProjectName>StayAwake</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,35 +73,36 @@
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <ExceptionHandling>Sync</ExceptionHandling>
       <OmitFramePointers>true</OmitFramePointers>
+      <CompileAsManaged>false</CompileAsManaged>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Coffeine.ico" />
     <Manifest Include="manifest.xml">
       <SubType>Designer</SubType>
     </Manifest>
-    <None Include="empty.ico" />
-    <None Include="full.ico" />
+    <None Include="img\empty.ico" />
+    <None Include="img\full.ico" />
     <None Include="ReadMe.txt" />
-    <None Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Coffeine.h" />
+    <ClInclude Include="StayAwake.h" />
     <ClInclude Include="IniFile.h" />
     <ClInclude Include="Properties.h" />
-    <ClInclude Include="PropertiesDialog.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TrayIcon.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="version.h" />
+    <ClInclude Include="Menu.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Coffeine.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="StayAwake.cpp" />
     <ClCompile Include="IniFile.cpp" />
     <ClCompile Include="Properties.cpp" />
-    <ClCompile Include="PropertiesDialog.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -110,7 +111,7 @@
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Coffeine.rc" />
+    <ResourceCompile Include="StayAwake.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

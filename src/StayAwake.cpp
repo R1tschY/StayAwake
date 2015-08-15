@@ -1,13 +1,14 @@
-/* Coffeine.cpp 
+/* 
+ * This file is part of StayAwake.
  *
- *  Copyright (C) 2010, 2015  Richard Liebscher
+ *  Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  StayAwake is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  StayAwake is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the GNU General Public License for more details.
@@ -23,81 +24,14 @@
 #include <Strsafe.h>
 #include <cassert>
 
-#include "Coffeine.h"
+#include "StayAwake.h"
 
 #include "TrayIcon.h"
 #include "Utils.h"
-#include "PropertiesDialog.h"
+#include "resource.h"
+#include "version.h"
 
-void ShowMessage(LPCWSTR msg);
-void HandleWindowsError(LPCWSTR msg, DWORD code);
-
-int APIENTRY _tWinMain(HINSTANCE hInst,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
-{
-  UNREFERENCED_PARAMETER(hPrevInstance);
-  UNREFERENCED_PARAMETER(lpCmdLine);
-
-  // Testen ob Coffeine schon läuft
-  if (FindWindow(COFFEIN_WINDOW_CLASS, nullptr) != nullptr)
-    return 0;
-
-  CoffeineUi ui(hInst);
-  if (!ui.okay())
-  {
-    // TODO: log failure
-    return 100;
-  }
-
-  MSG msg;
-  while (GetMessage(&msg, NULL, 0, 0))
-  {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
-
-  return (int) msg.wParam;
-}
-
-inline static
-bool isScreensaverActive()
-{
-  BOOL result;
-  SystemParametersInfoW(SPI_GETSCREENSAVERRUNNING, 0, &result, 0);
-  return result == TRUE;
-}
-
-static
-HWND getFullscreenWindow()
-{
-  RECT desktop_rect;
-  HWND desktop_window = GetDesktopWindow();
-  RECT app;
-  HWND hwnd = GetForegroundWindow();
-
-  if (   desktop_window != nullptr
-      && hwnd != nullptr
-      && hwnd != desktop_window
-      && hwnd != GetShellWindow()
-      && GetWindowRect(desktop_window, &desktop_rect)
-      && GetWindowRect(hwnd, &app)
-      && app.top    <= desktop_rect.top
-      && app.bottom >= desktop_rect.bottom
-      && app.right  >= desktop_rect.right
-      && app.left   <= desktop_rect.left // TODO: Rect.isWarping()
-      && !isScreensaverActive())
-  {
-    return hwnd;
-  } 
-  else 
-  {
-    return nullptr;
-  }
-}
-
-Coffeine::Coffeine(HWND hwnd) : 
+StayAwake::StayAwake(HWND hwnd) : 
   automatic_(false),
   manuell_state_(false),
   automatic_state_(false),
@@ -107,9 +41,10 @@ Coffeine::Coffeine(HWND hwnd) :
 
   hwnd_(hwnd)
 {
+
 }
 
-Coffeine::~Coffeine()
+StayAwake::~StayAwake()
 {
   if (is_timer_active_)
   {
@@ -117,7 +52,7 @@ Coffeine::~Coffeine()
   }
 }
 
-void Coffeine::setAutomatic(bool value)
+void StayAwake::setAutomatic(bool value)
 {
   if (automatic_ == value) 
     return;
@@ -128,7 +63,7 @@ void Coffeine::setAutomatic(bool value)
   update();
 }
 
-void Coffeine::setManuellState(bool value)
+void StayAwake::setManuellState(bool value)
 {
   if (manuell_state_ == value) 
     return;
@@ -139,7 +74,7 @@ void Coffeine::setManuellState(bool value)
   update();
 }
 
-void Coffeine::updateTimer()
+void StayAwake::updateTimer()
 {
   bool state = (automatic_ || manuell_state_);
 
@@ -158,7 +93,7 @@ void Coffeine::updateTimer()
   }
 }
 
-void Coffeine::update()
+void StayAwake::update()
 {
   if (automatic_)
   {
@@ -186,12 +121,12 @@ void Coffeine::update()
   }
 }
 
-void CALLBACK Coffeine::TimerProc(HWND hwnd, UINT msg, UINT_PTR id, DWORD time)
+void CALLBACK StayAwake::TimerProc(HWND hwnd, UINT msg, UINT_PTR id, DWORD time)
 {
   if (msg != WM_TIMER)
     return;
 
-  Coffeine* self = reinterpret_cast<Coffeine*>(id);
+  StayAwake* self = reinterpret_cast<StayAwake*>(id);
   assert(self != nullptr);
 
   self->update();
@@ -200,14 +135,20 @@ void CALLBACK Coffeine::TimerProc(HWND hwnd, UINT msg, UINT_PTR id, DWORD time)
 //
 // UI
 
-INT_PTR CALLBACK 
+static
+INT_PTR CALLBACK
 About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) 
 {
   UNREFERENCED_PARAMETER(lParam);
   switch (message)
   {
-  case WM_INITDIALOG:
+  case WM_INITDIALOG: {
+    SetWindowTextW(hDlg, getResourceString(nullptr, IDS_ABOUT_TITLE).c_str());
+    SetDlgItemTextW(hDlg, IDC_VERSION, TO_WIDESTRING(PACKAGE_NAME) L", Version " TO_WIDESTRING(PACKAGE_VERSION));
+    SetDlgItemTextW(hDlg, IDC_COPYRIGHT, TO_WIDESTRING(PACKAGE_COPYRIGHT));
+    SetDlgItemTextW(hDlg, IDC_GPL, getResourceString(nullptr, IDS_GPL).c_str());
     return (INT_PTR)TRUE;
+  }
 
   case WM_COMMAND:
     if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL)
@@ -216,38 +157,65 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
       return (INT_PTR)TRUE;
     }
     break;
+
+  case WM_NOTIFY: {
+    LPNMHDR evt = reinterpret_cast<LPNMHDR>(lParam); 
+    if (evt->code == NM_CLICK || evt->code == NM_RETURN)
+    {    
+      if (evt->idFrom == IDC_GPL) {
+        ShellExecute(hDlg, L"open", TO_WIDESTRING(GPL_WEBSITE), NULL, NULL, SW_SHOW);
+      }
+    }    
+    break;
+  }
   }
   return (INT_PTR)FALSE;
 }
 
-CoffeineUi::CoffeineUi(HINSTANCE hinstance) :
+StayAwakeUi::StayAwakeUi(HINSTANCE hinstance) :
   hinstance_(hinstance),
-  app_title_(getResourceString(hinstance_, IDS_APP_TITLE)),
   hwnd_(createWindow()),
   trayicon_(),
   coffein_(hwnd_),
-  properties_dialog_(hinstance, properties_)
+
+  activate_string_(getResourceString(hinstance_, IDS_POPUP_SET)),
+  deactivate_string_(getResourceString(hinstance_, IDS_POPUP_UNSET)),
+  auto_activated_string_(getResourceString(hinstance_, IDS_POPUP_AUTO_SET))
 {
   if (hwnd_ == nullptr)
     return;
 
-  coffein_.setAutomatic(properties_.GetAutomatic());
-  coffein_.update();
+  auto autostart_flags = properties_.GetStartup()
+    ? Windows::MenuEntryFlags::Checked
+    : Windows::MenuEntryFlags::Unchecked;
+  auto automatic_flags = properties_.GetAutomatic()
+    ? Windows::MenuEntryFlags::Checked
+    : Windows::MenuEntryFlags::Unchecked;
 
+  popup_menu_ = std::move(Windows::Menu::createPopupMenu());
+  popup_menu_.addEntry(InfoEntry, getResourceString(hinstance_, IDS_POPUP_INFO));
+  popup_menu_.addSeperator();
+  popup_menu_.addEntry(OptionsEntry, getResourceString(hinstance_, IDS_POPUP_OPTIONS), Windows::MenuEntryFlags::Disabled);
+  popup_menu_.addEntry(AutostartEntry, getResourceString(hinstance_, IDS_POPUP_AUTOSTART), autostart_flags);
+  popup_menu_.addEntry(AutomaticEntry, getResourceString(hinstance_, IDS_POPUP_AUTOMATIC), automatic_flags);
+  popup_menu_.addSeperator();
+  popup_menu_.addEntry(SetManuellEntry, activate_string_.c_str());
+  popup_menu_.addSeperator();
+  popup_menu_.addEntry(ExitEntry, getResourceString(hinstance_, IDS_POPUP_EXIT));
+  trayicon_.setPopupMenu(popup_menu_.getHMENU());
   trayicon_.add(hwnd_, loadResourceIcon(hinstance_, IDI_CUP_EMPTY, 0));  
 
-  HMENU hmenu = LoadMenu(hinstance_, MAKEINTRESOURCE(IDC_COFFEIN));
-  popup_menu_ = GetSubMenu(hmenu, 0);
-  trayicon_.setPopupMenu(popup_menu_);
+  coffein_.setAutomatic(properties_.GetAutomatic());
+  coffein_.update();
 }
 
-CoffeineUi::~CoffeineUi()
+StayAwakeUi::~StayAwakeUi()
 {
   destroy();
 }
 
 void
-CoffeineUi::destroy()
+StayAwakeUi::destroy()
 {
   if (hwnd_) 
   {
@@ -257,34 +225,34 @@ CoffeineUi::destroy()
 }
 
 ATOM
-CoffeineUi::registerWindowClass()
+StayAwakeUi::registerWindowClass()
 {
   WNDCLASSEXW wcex;
 
   wcex.cbSize = sizeof(WNDCLASSEXW);
 
   wcex.style		= CS_HREDRAW | CS_VREDRAW;
-  wcex.lpfnWndProc	= &CoffeineUi::MessageEntry;
+  wcex.lpfnWndProc	= &StayAwakeUi::MessageEntry;
   wcex.cbClsExtra	= 0;
   wcex.cbWndExtra	= 0;
   wcex.hInstance	= hinstance_;
-  wcex.hIcon		= LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_COFFEIN));
+  wcex.hIcon		= LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_CUP_FULL));
   wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
   wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-  wcex.lpszMenuName	= MAKEINTRESOURCEW(IDC_COFFEIN);
+  wcex.lpszMenuName	= nullptr;
   wcex.lpszClassName	= COFFEIN_WINDOW_CLASS;
-  wcex.hIconSm		= LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_SMALL));
+  wcex.hIconSm		= LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_CUP_FULL));
 
   return RegisterClassExW(&wcex);
 }
 
 HWND
-CoffeineUi::createWindow()
+StayAwakeUi::createWindow()
 {
   registerWindowClass();
   HWND hwnd = CreateWindowW(
     COFFEIN_WINDOW_CLASS, 
-    app_title_.c_str(), 
+    TO_WIDESTRING(PACKAGE_NAME), 
     WS_OVERLAPPEDWINDOW,
     CW_USEDEFAULT, 
     0, 
@@ -303,7 +271,7 @@ CoffeineUi::createWindow()
 }
 
 void 
-CoffeineUi::onManuellSet(bool value)
+StayAwakeUi::onManuellSet(bool value)
 {
   if (value == coffein_.getManuellState())  
     return;
@@ -312,42 +280,69 @@ CoffeineUi::onManuellSet(bool value)
 }
 
 void
-CoffeineUi::onStateChanged(bool newstate)
+StayAwakeUi::onStateChanged(bool newstate)
 {
   if (coffein_.getAutomaticState())
   {
-    ModifyMenu(popup_menu_,
-      IDM_SET,
-      MF_BYCOMMAND | MF_STRING | MF_DISABLED | MF_GRAYED,
-      IDM_SET,
-      L"Aktiviert (wegen Vollbildfenster)");
+    popup_menu_.modifyEntry(
+      SetManuellEntry, 
+      auto_activated_string_.c_str(),
+      Windows::MenuEntryFlags::_(Windows::MenuEntryFlags::Disabled | Windows::MenuEntryFlags::Grayed));
     trayicon_.setIcon(loadResourceIcon(hinstance_, IDI_CUP_FULL, 0));
     return;
   }
 
   if (coffein_.getManuellState()) {
-    ModifyMenu(popup_menu_,
-      IDM_SET,
-      MF_BYCOMMAND | MF_STRING,
-      IDM_SET,
-      L"Deaktivieren");
+    popup_menu_.modifyEntry(
+      SetManuellEntry, 
+      deactivate_string_.c_str());
 
     trayicon_.setIcon(loadResourceIcon(hinstance_, IDI_CUP_FULL, 0));
   }
   else
   {
-    ModifyMenu(popup_menu_,
-      IDM_SET,
-      MF_BYCOMMAND | MF_STRING,
-      IDM_SET,
-      L"Aktivieren");
+    popup_menu_.modifyEntry(
+      SetManuellEntry, 
+      activate_string_.c_str());
 
     trayicon_.setIcon(loadResourceIcon(hinstance_, IDI_CUP_EMPTY, 0));
   }
 }
 
+void StayAwakeUi::onAutostartSet(bool value)
+{
+  properties_.SetStartup(value);
+
+  auto flags = value
+    ? Windows::MenuEntryFlags::Checked
+    : Windows::MenuEntryFlags::Unchecked;
+  popup_menu_.modifyEntry(
+    AutostartEntry, 
+    getResourceString(hinstance_, IDS_POPUP_AUTOSTART),
+    flags);
+}
+
+void StayAwakeUi::onAutomaticSet(bool value)
+{
+  properties_.SetAutomatic(value);
+  coffein_.setAutomatic(value);
+  
+  auto flags = value
+    ? Windows::MenuEntryFlags::Checked
+    : Windows::MenuEntryFlags::Unchecked;
+  popup_menu_.modifyEntry(
+    AutomaticEntry, 
+    getResourceString(hinstance_, IDS_POPUP_AUTOMATIC),
+    flags);
+}
+
+void StayAwakeUi::onAbout()
+{
+  DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd_, About);
+}
+
 LRESULT 
-CoffeineUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam) 
+StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam) 
 {
   int wmId, wmEvent;
 
@@ -366,22 +361,24 @@ CoffeineUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
     // Menüauswahl bearbeiten:
     switch (wmId)
     {
-    case IDM_ABOUT:
-      DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd_, About);
+    case InfoEntry:
+      onAbout();
       break;
 
-    case IDM_PRO:
-      properties_dialog_.show(hwnd_);
-      coffein_.setAutomatic(properties_.GetAutomatic());
-      coffein_.update();
+    case AutostartEntry:
+      onAutostartSet(!popup_menu_.isEntryChecked(AutostartEntry));
       break;
 
-    case IDM_EXIT:
-      destroy();
+    case AutomaticEntry:
+      onAutomaticSet(!popup_menu_.isEntryChecked(AutomaticEntry));
       break;
 
-    case IDM_SET:
+    case SetManuellEntry:
       onManuellSet(!coffein_.getManuellState());
+      break;
+
+    case ExitEntry:
+      destroy();
       break;
 
     default:
@@ -411,11 +408,10 @@ CoffeineUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
     break;
 
   case WM_DESTROY:
-    DestroyMenu(popup_menu_);
     PostQuitMessage(0);
     break;
 
-  case Coffeine::WM_STATE_CHANGED:
+  case StayAwake::WM_STATE_CHANGED:
     onStateChanged(wparam != 0);
     break;
 
@@ -426,13 +422,13 @@ CoffeineUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
 }
 
 LRESULT CALLBACK
-CoffeineUi::MessageEntry(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam) 
+StayAwakeUi::MessageEntry(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam) 
 {
-  auto window = reinterpret_cast<CoffeineUi*>(GetWindowLongPtr(handle, GWLP_USERDATA));
+  auto window = reinterpret_cast<StayAwakeUi*>(GetWindowLongPtr(handle, GWLP_USERDATA));
   if (!window) {
     if (msg == WM_NCCREATE) {
       auto create_struct = reinterpret_cast<CREATESTRUCT*>(lparam);
-      window = static_cast<CoffeineUi*>(create_struct->lpCreateParams);
+      window = static_cast<StayAwakeUi*>(create_struct->lpCreateParams);
       assert(window);
 
       SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));

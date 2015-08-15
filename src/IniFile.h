@@ -1,13 +1,14 @@
-/* IniFiles.h 
+/* 
+ * This file is part of StayAwake.
  *
- *  Copyright (C) 2010,2015  Richard Liebscher
+ *  Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>
  *
- *  This program is free software; you can redistribute it and/or modify
+ *  StayAwake is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 3 of the License, or
  *  (at your option) any later version.
  *
- *  This program is distributed in the hope that it will be useful,
+ *  StayAwake is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *  See the GNU General Public License for more details.
@@ -22,7 +23,7 @@
 #include "stdafx.h"
 
 #include <string>
-#include <list>
+#include <vector>
 
 class IniFile {
 public:
@@ -33,7 +34,7 @@ public:
   std::wstring getString (const wchar_t* section, const wchar_t* key, const wchar_t* defaultvalue) const;
   bool         getBoolean(const wchar_t* section, const wchar_t* key, bool defaultvalue) const;
 
-  std::list<std::wstring> getSections() const;
+  std::vector<std::wstring> getSections() const;
 
   bool setString (const wchar_t* section, const wchar_t* key, const wchar_t* str) const;
   bool setBoolean(const wchar_t* section, const wchar_t* key, bool value) const {

@@ -1,19 +1,19 @@
 ﻿========================================================================
-    Coffeine LIESMICH
+    StayAwake LIESMICH
 ========================================================================
 
-Coffeine verhindert den Start des Bildschirmschoners sowie des Standbys.
-Gesteuert wird Coffeine durch ein Icon in der Windows Statusanzeige.
+StayAwake verhindert den Start des Bildschirmschoners sowie den Stand-by.
+Gesteuert wird StayAwake durch ein Icon in der Windows Statusanzeige.
 
-Coffeine steht unter GPL v3.
+StayAwake steht unter GPL v3.
 
 Es gibt folgende Möglichkeiten des Blockierens:
  
  - manuelle Blockade über Rechtsklickmenu des Icon
- - automatische Blockade wenn Vordergrundfenter im Vollbildmodus
+ - automatische Blockade wenn Vordergrundfenster im Vollbildmodus
    (deaktivierbar)
 
-außerdem gibt es sie Möglichkeit Coffeine immer bei Systemstart zu starten,
+außerdem gibt es sie Möglichkeit StayAwake immer bei Systemstart zu starten,
 dies ist einstellbar über den Einstellungsdialog.
 
 TODO Liste:
