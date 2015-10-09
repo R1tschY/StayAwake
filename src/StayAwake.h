@@ -83,6 +83,7 @@ public:
   void onAutostartSet(bool value);
   void onAutomaticSet(bool value);
   void onAbout();
+  void onContextMenu();
 
 private:
   enum PopupEntry {

@@ -202,7 +202,6 @@ StayAwakeUi::StayAwakeUi(HINSTANCE hinstance) :
   popup_menu_.addEntry(SetManuellEntry, activate_string_.c_str());
   popup_menu_.addSeperator();
   popup_menu_.addEntry(ExitEntry, getResourceString(hinstance_, IDS_POPUP_EXIT));
-  trayicon_.setPopupMenu(popup_menu_.getHMENU());
   trayicon_.add(hwnd_, loadResourceIcon(hinstance_, IDI_CUP_EMPTY, 0));  
 
   coffein_.setAutomatic(properties_.GetAutomatic());
@@ -341,6 +340,19 @@ void StayAwakeUi::onAbout()
   DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd_, About);
 }
 
+void StayAwakeUi::onContextMenu() 
+{
+  POINT pt;
+
+  SetForegroundWindow(hwnd_);
+  GetCursorPos(&pt);
+  TrackPopupMenu(popup_menu_.getHMENU(), 
+		  TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
+		  pt.x, pt.y, 0, hwnd_, nullptr); 
+
+  return true; 
+}
+
 LRESULT 
 StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam) 
 {
@@ -404,7 +416,17 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
 
     // Messages des TrayIcon
   case WM_TRAY_ICON_MESSAGE:
-    trayicon_.WinProcHandler(hwnd_, msg, wparam, lparam);
+    switch (lParam)
+    {
+    case WM_LBUTTONDOWN:
+      onManuellSet(!coffein_.getManuellState());
+      return 1;
+    
+    case WM_RBUTTONDOWN: 
+    case WM_CONTEXTMENU: 
+      onContextMenu();
+      return 1;
+    }
     break;
 
   case WM_DESTROY:
