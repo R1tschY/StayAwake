@@ -21,12 +21,13 @@
 
 #include "stdafx.h"
 
-#include "Properties.h"
-#include "TrayIcon.h"
-#include "Menu.h"
-#include "resource.h"
+#include <lightports/extra/menu.h>
+#include <lightports/extra/trayicon.h>
+#include <lightports/base/timeout.h>
+#include <lightports/controls/window.h>
 
-#define COFFEIN_WINDOW_CLASS L"StayAwakeWindowClass"
+#include "properties.h"
+#include "resource.h"
 
 class StayAwake
 {
@@ -58,25 +59,16 @@ private:
   bool is_timer_active_;
 
   HWND hwnd_;
+  Windows::Timeout timeout_;
 
   void updateTimer();
-
-  static void CALLBACK TimerProc(HWND hwnd, UINT msg, UINT_PTR id, DWORD time);
 };
 
-class StayAwakeUi
+class StayAwakeUi : public Windows::Window
 {
-  StayAwakeUi(const StayAwakeUi&);
-  StayAwakeUi& operator=(const StayAwakeUi&);
 public:
   StayAwakeUi(HINSTANCE hInstance);
   ~StayAwakeUi();
-
-  HWND getWindow() const { return hwnd_; }
-
-  bool okay() const { return hwnd_ != nullptr; }
-
-  void destroy();
 
   void onStateChanged(bool newstate);
   void onManuellSet(bool value);
@@ -99,22 +91,20 @@ private:
   };
 
   HINSTANCE hinstance_;
-  HWND hwnd_;
 
-  TrayIcon trayicon_;
+  Windows::TrayIcon trayicon_;
   Windows::Menu popup_menu_;
 
   StayAwake coffein_;
   Properties properties_;
 
-  LRESULT onMessage(UINT msg, WPARAM wparam, LPARAM lparam);
-
-  ATOM registerWindowClass();
-  HWND createWindow();
-
   std::wstring activate_string_;
   std::wstring deactivate_string_;
   std::wstring auto_activated_string_;
+
+  void onCreate() override;
+  void onDestroy() override;
+  LRESULT onMessage(UINT msg, WPARAM wparam, LPARAM lparam) override;
 
   static LRESULT CALLBACK MessageEntry(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 };

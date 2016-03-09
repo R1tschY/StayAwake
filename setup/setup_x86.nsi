@@ -86,6 +86,7 @@ Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
     File ..\Release\StayAwake.exe
+    File ...\GPL-3.0.txt
     File x86\msvcp100.dll
     File x86\msvcr100.dll
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
@@ -126,6 +127,7 @@ done${UNSECTION_ID}:
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
     Delete /REBOOTOK $INSTDIR\StayAwake.exe
+    Delete /REBOOTOK $INSTDIR\GPL-3.0.txt
     Delete /REBOOTOK $INSTDIR\msvcp100.dll
     Delete /REBOOTOK $INSTDIR\msvcr100.dll
     DeleteRegValue HKLM "${REGKEY}\Components" Main

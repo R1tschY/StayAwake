@@ -17,41 +17,32 @@
  *  along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#ifndef __PROPERTIES_H__
+#define __PROPERTIES_H__
 
 #include "stdafx.h"
+#include <lightports/base/configfile.h>
 
-#define _STRINGIFY(x) #x
-#define STRINGIFY(x) _STRINGIFY(x)
+class Properties {
+public:
+  Properties();
+  ~Properties();
 
-#define _TO_WIDESTRING(x) L ## x
-#define TO_WIDESTRING(x) _TO_WIDESTRING(x)
-#define WSTRINGIFY(x) TO_WIDESTRING(_STRINGIFY(x))
+  void SetStartup(bool startup);
+  bool GetStartup() const { return _startup; };
 
+  static const bool AutomaticDefault = true;
+  void SetAutomatic(bool value);
+  bool GetAutomatic() const { return _automatic; };
 
-template <typename T, std::size_t N>
-inline
-std::size_t length(const T(&) [N]) {
-  return N;
-}
+private:
+  Windows::ConfigFile _configfile;
 
-template <typename Container, std::size_t N>
-inline
-std::size_t length(const Container& t) {
-  return t.size();
-}
+  static const wchar_t * const Filename;
+  
+  bool _startup;
+  bool _automatic;
+};
 
+#endif // __PROPERTIES_H__
 
-std::wstring getResourceString(HINSTANCE hinstance, unsigned id);
-HICON loadResourceIcon(HINSTANCE hinstance, WORD resourceid, int size = 0);
-
-void handleWindowsError(LPCWSTR msg, DWORD code);
-
-bool isScreensaverActive();
-
-HWND getFullscreenWindow();
-
-std::wstring getApplicationExecutablePath();
-
-bool setProgramToAutostart(bool value = true);
-bool isProgramInAutostart();

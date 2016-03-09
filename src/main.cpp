@@ -17,40 +17,25 @@
  *  along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "config.h"
+#include "stayawake.h"
 #include "stdafx.h"
 
-#include "StayAwake.h"
-#include "version.h"
+#include <cpp-utils/strings/string_literal.h>
+#include <lightports/base/application.h>
 
-
-int APIENTRY _tWinMain(HINSTANCE hInst,
-                     HINSTANCE hPrevInstance,
-                     LPTSTR    lpCmdLine,
-                     int       nCmdShow)
+static int run()
 {
-  UNREFERENCED_PARAMETER(hPrevInstance);
-  UNREFERENCED_PARAMETER(lpCmdLine);
-
-  // Testen ob StayAwake schon läuft
-  if (FindWindow(COFFEIN_WINDOW_CLASS, nullptr) != nullptr)
-    return 0;
-
   try 
   {
-    StayAwakeUi ui(hInst);
+    StayAwakeUi ui(Windows::Application::getInstance());
     if (!ui.okay())
     {
       // TODO: log failure
       return 100;
     }
 
-    MSG msg;
-    while (GetMessage(&msg, NULL, 0, 0))
-    {
-      TranslateMessage(&msg);
-      DispatchMessage(&msg);
-    }
-    return (int) msg.wParam;
+    return Windows::Application::processMessages();
   }
   catch (const std::exception& e)
   {
@@ -59,7 +44,20 @@ int APIENTRY _tWinMain(HINSTANCE hInst,
   }
   catch(...)
   {
-    MessageBoxA(NULL, "Unknown exception happend.", PACKAGE_NAME, MB_OK | MB_ICONERROR); 
+    MessageBoxA(NULL, "Unknown exception happend.", PACKAGE_NAME, MB_OK | MB_ICONERROR);
     return 1;
-  }  
+  }
+}
+
+int APIENTRY wWinMain(HINSTANCE hInst,
+                     HINSTANCE hPrevInstance,
+                     LPWSTR    lpCmdLine,
+                     int       nCmdShow)
+{
+  UNREFERENCED_PARAMETER(hPrevInstance);
+  UNREFERENCED_PARAMETER(lpCmdLine);
+  UNREFERENCED_PARAMETER(nCmdShow);
+
+  Windows::Application app(wstring_literal(PACKAGE_NAME), hInst);
+  return app.run(run);
 }

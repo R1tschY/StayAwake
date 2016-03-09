@@ -19,8 +19,7 @@
 
 #pragma once
 
-#define PACKAGE_VERSION "0.3"
-#define PACKAGE_NAME "StayAwake"
-#define PACKAGE_COMPANY "Richard Liebscher"
-#define PACKAGE_COPYRIGHT "Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>"
-#define GPL_WEBSITE "http://www.gnu.org/licenses/gpl-3.0.html"
+#define PACKAGE_VERSION "@PROJECT_VERSION@"
+#define PACKAGE_NAME "@PROJECT_NAME@"
+#define PACKAGE_COMPANY "@PROJECT_AUTHOR@"
+#define PACKAGE_COPYRIGHT "@PROJECT_COPYRIGHT@"

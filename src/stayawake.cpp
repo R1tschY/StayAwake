@@ -17,19 +17,21 @@
  *  along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "stayawake.h"
+
 #include "stdafx.h"
 
-#pragma comment(lib, "comctl32.lib")
+#include <strsafe.h>
+#include <utility>
 
-#include <Strsafe.h>
-#include <cassert>
+#include "config.h.in"
+#include <cpp-utils/preprocessor.h>
+#include <cpp-utils/assert.h>
+#include <cpp-utils/strings/string_literal.h>
+#include <lightports/core.h>
 
-#include "StayAwake.h"
-
-#include "TrayIcon.h"
-#include "Utils.h"
 #include "resource.h"
-#include "version.h"
+#include "utils.h"
 
 StayAwake::StayAwake(HWND hwnd) : 
   automatic_(false),
@@ -39,17 +41,12 @@ StayAwake::StayAwake(HWND hwnd) :
   last_state_(false),
   is_timer_active_(false),
 
-  hwnd_(hwnd)
-{
-
-}
+  hwnd_(hwnd),
+  timeout_([=](){ update(); }, -1)
+{ }
 
 StayAwake::~StayAwake()
 {
-  if (is_timer_active_)
-  {
-    KillTimer(hwnd_, (UINT_PTR)this); 
-  }
 }
 
 void StayAwake::setAutomatic(bool value)
@@ -85,11 +82,11 @@ void StayAwake::updateTimer()
 
   if (state) 
   {
-    SetTimer(hwnd_, (UINT_PTR)this, 30 * 1000, TimerProc);
+    timeout_.setInterval(30 * 1000);
   } 
   else 
   {
-    KillTimer(hwnd_, (UINT_PTR)this); 
+    timeout_.setInterval(-1);
   }
 }
 
@@ -121,17 +118,6 @@ void StayAwake::update()
   }
 }
 
-void CALLBACK StayAwake::TimerProc(HWND hwnd, UINT msg, UINT_PTR id, DWORD time)
-{
-  if (msg != WM_TIMER)
-    return;
-
-  StayAwake* self = reinterpret_cast<StayAwake*>(id);
-  assert(self != nullptr);
-
-  self->update();
-}
-
 //
 // UI
 
@@ -144,8 +130,8 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   {
   case WM_INITDIALOG: {
     SetWindowTextW(hDlg, getResourceString(nullptr, IDS_ABOUT_TITLE).c_str());
-    SetDlgItemTextW(hDlg, IDC_VERSION, TO_WIDESTRING(PACKAGE_NAME) L", Version " TO_WIDESTRING(PACKAGE_VERSION));
-    SetDlgItemTextW(hDlg, IDC_COPYRIGHT, TO_WIDESTRING(PACKAGE_COPYRIGHT));
+    SetDlgItemTextW(hDlg, IDC_VERSION, CPP_WSTRINGIFY(PACKAGE_NAME) L", Version " CPP_WSTRINGIFY(PACKAGE_VERSION));
+    SetDlgItemTextW(hDlg, IDC_COPYRIGHT, CPP_WSTRINGIFY(PACKAGE_COPYRIGHT));
     SetDlgItemTextW(hDlg, IDC_GPL, getResourceString(nullptr, IDS_GPL).c_str());
     return (INT_PTR)TRUE;
   }
@@ -163,7 +149,7 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     if (evt->code == NM_CLICK || evt->code == NM_RETURN)
     {    
       if (evt->idFrom == IDC_GPL) {
-        ShellExecute(hDlg, L"open", TO_WIDESTRING(GPL_WEBSITE), NULL, NULL, SW_SHOW);
+        ShellExecuteW(hDlg, L"open", CPP_WSTRINGIFY(GPL_WEBSITE), NULL, NULL, SW_SHOW);
       }
     }    
     break;
@@ -173,18 +159,21 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 StayAwakeUi::StayAwakeUi(HINSTANCE hinstance) :
+  Windows::Window(Window::Type::Normal),
+
   hinstance_(hinstance),
-  hwnd_(createWindow()),
   trayicon_(),
-  coffein_(hwnd_),
+  coffein_(getNativeHandle()),
 
   activate_string_(getResourceString(hinstance_, IDS_POPUP_SET)),
   deactivate_string_(getResourceString(hinstance_, IDS_POPUP_UNSET)),
   auto_activated_string_(getResourceString(hinstance_, IDS_POPUP_AUTO_SET))
 {
-  if (hwnd_ == nullptr)
-    return;
 
+}
+
+void StayAwakeUi::onCreate()
+{
   auto autostart_flags = properties_.GetStartup()
     ? Windows::MenuEntryFlags::Checked
     : Windows::MenuEntryFlags::Unchecked;
@@ -202,7 +191,7 @@ StayAwakeUi::StayAwakeUi(HINSTANCE hinstance) :
   popup_menu_.addEntry(SetManuellEntry, activate_string_.c_str());
   popup_menu_.addSeperator();
   popup_menu_.addEntry(ExitEntry, getResourceString(hinstance_, IDS_POPUP_EXIT));
-  trayicon_.add(hwnd_, loadResourceIcon(hinstance_, IDI_CUP_EMPTY, 0));  
+  trayicon_.add(getNativeHandle(), loadResourceIcon(hinstance_, IDI_CUP_EMPTY, 0), wstring_literal(""));
 
   coffein_.setAutomatic(properties_.GetAutomatic());
   coffein_.update();
@@ -210,63 +199,13 @@ StayAwakeUi::StayAwakeUi(HINSTANCE hinstance) :
 
 StayAwakeUi::~StayAwakeUi()
 {
-  destroy();
 }
 
 void
-StayAwakeUi::destroy()
+StayAwakeUi::onDestroy()
 {
-  if (hwnd_) 
-  {
-    DestroyWindow(hwnd_);
-    hwnd_ = nullptr;
-  }
-}
-
-ATOM
-StayAwakeUi::registerWindowClass()
-{
-  WNDCLASSEXW wcex;
-
-  wcex.cbSize = sizeof(WNDCLASSEXW);
-
-  wcex.style		= CS_HREDRAW | CS_VREDRAW;
-  wcex.lpfnWndProc	= &StayAwakeUi::MessageEntry;
-  wcex.cbClsExtra	= 0;
-  wcex.cbWndExtra	= 0;
-  wcex.hInstance	= hinstance_;
-  wcex.hIcon		= LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_CUP_FULL));
-  wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
-  wcex.hbrBackground	= (HBRUSH)(COLOR_WINDOW+1);
-  wcex.lpszMenuName	= nullptr;
-  wcex.lpszClassName	= COFFEIN_WINDOW_CLASS;
-  wcex.hIconSm		= LoadIcon(hinstance_, MAKEINTRESOURCE(IDI_CUP_FULL));
-
-  return RegisterClassExW(&wcex);
-}
-
-HWND
-StayAwakeUi::createWindow()
-{
-  registerWindowClass();
-  HWND hwnd = CreateWindowW(
-    COFFEIN_WINDOW_CLASS, 
-    TO_WIDESTRING(PACKAGE_NAME), 
-    WS_OVERLAPPEDWINDOW,
-    CW_USEDEFAULT, 
-    0, 
-    CW_USEDEFAULT, 
-    0, 
-    NULL, 
-    NULL, 
-    hinstance_,
-    this);
-
-  if (!hwnd) 
-  {
-    handleWindowsError(L"", GetLastError());
-  }
-  return hwnd;
+  trayicon_.remove();
+  PostQuitMessage(0);
 }
 
 void 
@@ -337,20 +276,18 @@ void StayAwakeUi::onAutomaticSet(bool value)
 
 void StayAwakeUi::onAbout()
 {
-  DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), hwnd_, About);
+  DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), getNativeHandle(), About);
 }
 
 void StayAwakeUi::onContextMenu() 
 {
   POINT pt;
 
-  SetForegroundWindow(hwnd_);
+  SetForegroundWindow(getNativeHandle());
   GetCursorPos(&pt);
   TrackPopupMenu(popup_menu_.getHMENU(), 
 		  TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
-		  pt.x, pt.y, 0, hwnd_, nullptr); 
-
-  return true; 
+		  pt.x, pt.y, 0, getNativeHandle(), nullptr);
 }
 
 LRESULT 
@@ -370,7 +307,7 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
   case WM_COMMAND:
     wmId    = LOWORD(wparam);
     wmEvent = HIWORD(wparam);
-    // Menüauswahl bearbeiten:
+    // MenÃ¼auswahl bearbeiten:
     switch (wmId)
     {
     case InfoEntry:
@@ -392,9 +329,6 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
     case ExitEntry:
       destroy();
       break;
-
-    default:
-      return DefWindowProc(hwnd_, msg, wparam, lparam);
     }
     break;
 
@@ -415,8 +349,8 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
     return TRUE;
 
     // Messages des TrayIcon
-  case WM_TRAY_ICON_MESSAGE:
-    switch (lParam)
+  case Windows::TrayIcon::MessageId:
+    switch (lparam)
     {
     case WM_LBUTTONDOWN:
       onManuellSet(!coffein_.getManuellState());
@@ -429,39 +363,10 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
     }
     break;
 
-  case WM_DESTROY:
-    PostQuitMessage(0);
-    break;
-
   case StayAwake::WM_STATE_CHANGED:
     onStateChanged(wparam != 0);
     break;
-
-  default:
-    return DefWindowProc(hwnd_, msg, wparam, lparam);
-  }
-  return 0;
-}
-
-LRESULT CALLBACK
-StayAwakeUi::MessageEntry(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam) 
-{
-  auto window = reinterpret_cast<StayAwakeUi*>(GetWindowLongPtr(handle, GWLP_USERDATA));
-  if (!window) {
-    if (msg == WM_NCCREATE) {
-      auto create_struct = reinterpret_cast<CREATESTRUCT*>(lparam);
-      window = static_cast<StayAwakeUi*>(create_struct->lpCreateParams);
-      assert(window);
-
-      SetWindowLongPtr(handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(window));
-      window->hwnd_ = handle;
-    }
-
-    if (!window)
-    {
-      return DefWindowProc(handle, msg, wparam, lparam);
-    }
   }
 
-  return window->onMessage(msg, wparam, lparam);
+  return Windows::Window::onMessage(msg, wparam, lparam);
 }

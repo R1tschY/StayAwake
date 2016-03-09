@@ -17,32 +17,13 @@
  *  along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef __PROPERTIES_H__
-#define __PROPERTIES_H__
+#pragma once
 
 #include "stdafx.h"
-#include "IniFile.h"
 
-class Properties {
-public:
-  Properties();
-  ~Properties();
+std::wstring getResourceString(HINSTANCE hinstance, unsigned id);
+HICON loadResourceIcon(HINSTANCE hinstance, WORD resourceid, int size = 0);
 
-  void SetStartup(bool startup);
-  bool GetStartup() const { return _startup; };
+bool isScreensaverActive();
 
-  static const bool AutomaticDefault = true;
-  void SetAutomatic(bool value);
-  bool GetAutomatic() const { return _automatic; };
-
-private:
-  IniFile _configfile;
-
-  static const wchar_t * const Filename;
-  
-  bool _startup;
-  bool _automatic;
-};
-
-#endif // __PROPERTIES_H__
-
+HWND getFullscreenWindow();

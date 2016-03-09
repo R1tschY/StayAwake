@@ -1,0 +1,6 @@
+[submodule "libs/lightports"]
+	path = libs/lightports
+	url = https://github.com/R1tschY/liblightports.git
+[submodule "libs/cpp-utils"]
+	path = libs/cpp-utils
+	url = https://github.com/R1tschY/cpp-utils.git

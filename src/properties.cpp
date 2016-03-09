@@ -17,32 +17,27 @@
  *  along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "properties.h"
+
+#include "config.h.in"
 #include "stdafx.h"
 
-#include "Properties.h"
+#include "utils.h"
+#include <cpp-utils/preprocessor.h>
+#include <lightports/base/application.h>
+#include <lightports/extra/autostart.h>
 
-#include "Utils.h"
-#include "version.h"
-
-const wchar_t * const Properties::Filename = TO_WIDESTRING(PACKAGE_NAME) L".ini";
+const wchar_t * const Properties::Filename = CPP_WSTRINGIFY(PACKAGE_NAME) L".ini";
 
 Properties::Properties() 
 {
-  std::wstring path = getApplicationExecutablePath();
-  if (path.empty())
-  {
-    return;
-  }
-
-  // Build Filename
-  // TODO: Error handling
-  size_t found = path.rfind('\\');
-  path.replace(++found, path.size() - found, Filename);
+  std::wstring path = Windows::Application::getExecutablePath().getFolder();
+  path.append(Filename);
 
   // Load Configuration
-  _configfile = IniFile(path);
-  _automatic = _configfile.getBoolean(L"common", L"automatic", AutomaticDefault);
-  _startup = isProgramInAutostart();
+  _configfile.loadFromFile(path);
+  _automatic = _configfile.getInteger(L"common", L"automatic", AutomaticDefault);
+  _startup = Windows::isProgramInAutostart();
 }
 
 Properties::~Properties()
@@ -53,7 +48,7 @@ void Properties::SetStartup(bool startup) {
   if (startup == _startup)
     return;
 
-  setProgramToAutostart(startup);
+  Windows::setProgramToAutostart(startup);
 }
 
 void Properties::SetAutomatic(bool value) {
@@ -61,5 +56,5 @@ void Properties::SetAutomatic(bool value) {
     return;
 
   _automatic = value;
-  _configfile.setBoolean(L"common", L"automatic", value);
+  _configfile.setInteger(L"common", L"automatic", value);
 }

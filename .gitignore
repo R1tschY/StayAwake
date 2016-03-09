@@ -230,3 +230,11 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# CMake
+build*
+
+# Eclipse
+.project
+.cproject
+.settings
