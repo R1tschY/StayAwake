@@ -238,3 +238,9 @@ build*
 .project
 .cproject
 .settings
+
+# QtCreator
+*.user
+
+# gettest
+*.mo

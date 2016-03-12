@@ -20,12 +20,22 @@
 #include "config.h"
 #include "stayawake.h"
 #include "stdafx.h"
+#include <iostream>
 
 #include <cpp-utils/strings/string_literal.h>
 #include <lightports/base/application.h>
+#include "gettext.h"
+
 
 static int run()
 {
+  using namespace boost::locale;
+
+  generator gen;
+  gen.add_messages_path("locale");
+  gen.add_messages_domain(PACKAGE_NAME);
+  std::locale::global(gen(""));
+
   try 
   {
     StayAwakeUi ui(Windows::Application::getInstance());
@@ -39,11 +49,13 @@ static int run()
   }
   catch (const std::exception& e)
   {
+    OutputDebugStringA(e.what());
     MessageBoxA(NULL, e.what(), PACKAGE_NAME, MB_OK | MB_ICONERROR); 
     return 1;
   }
   catch(...)
   {
+    OutputDebugStringA("Unknown exception happend.");
     MessageBoxA(NULL, "Unknown exception happend.", PACKAGE_NAME, MB_OK | MB_ICONERROR);
     return 1;
   }

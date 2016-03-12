@@ -22,6 +22,7 @@
 #include "stdafx.h"
 
 #include <lightports/extra/menu.h>
+#include <lightports/extra/icon.h>
 #include <lightports/extra/trayicon.h>
 #include <lightports/base/timeout.h>
 #include <lightports/controls/window.h>
@@ -49,6 +50,7 @@ public:
 
   bool getState() const { return manuell_state_ || (automatic_ && automatic_state_); }
   void update();
+  void setParent(HWND hwnd) { hwnd_ = hwnd; }
 
 private:
   bool automatic_;
@@ -75,7 +77,7 @@ public:
   void onAutostartSet(bool value);
   void onAutomaticSet(bool value);
   void onAbout();
-  void onContextMenu();
+  void onContextMenu(int x, int y);
 
 private:
   enum PopupEntry {
@@ -90,10 +92,21 @@ private:
     ExitEntry
   };
 
+  enum IconEntry {
+    CoffeeEntry = 1500,
+    TeaEntry,
+    MateEntry,
+    ToGoEntry
+  };
+
   HINSTANCE hinstance_;
 
   Windows::TrayIcon trayicon_;
   Windows::Menu popup_menu_;
+  Windows::Menu icon_menu_;
+
+  Windows::Icon active_icon_;
+  Windows::Icon inactive_icon_;
 
   StayAwake coffein_;
   Properties properties_;

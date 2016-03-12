@@ -1,0 +1,51 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-12 19:04+0100\n"
+"PO-Revision-Date: 2016-03-12 19:05+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.7\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: de_DE\n"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:186
+msgid "Info ..."
+msgstr "&Über ..."
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:188
+msgid "Options ..."
+msgstr "Einstellungen"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:189
+msgid "Start with Windows"
+msgstr "Mit Windows starten"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:190
+msgid "Activate with fullscreen window"
+msgstr "Bei Vollbildfenster aktivieren"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:192
+msgid "Coffee icon"
+msgstr "Kaffee Icone"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:193
+msgid "Tea icon"
+msgstr "Tee Icone"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:194
+msgid "Set icon"
+msgstr "Icone setzen"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:198
+msgid "Quit"
+msgstr "&Beenden"

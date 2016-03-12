@@ -42,8 +42,7 @@ getResourceString(HINSTANCE hinstance, unsigned id)
   return std::wstring(p, static_cast<std::size_t>(len));
 }
 
-HICON
-loadResourceIcon(HINSTANCE hinstance, WORD resourceid, int size) 
+HICON loadResourceIcon(HINSTANCE hinstance, WORD resourceid, int size)
 {
   return (HICON)::LoadImage(
     hinstance,
@@ -51,7 +50,7 @@ loadResourceIcon(HINSTANCE hinstance, WORD resourceid, int size)
     IMAGE_ICON,
     size,
     size,
-    LR_SHARED
+    0
   );
 }
 

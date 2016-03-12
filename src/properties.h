@@ -29,11 +29,11 @@ public:
   ~Properties();
 
   void SetStartup(bool startup);
-  bool GetStartup() const { return _startup; };
+  bool GetStartup() const { return _startup; }
 
   static const bool AutomaticDefault = true;
   void SetAutomatic(bool value);
-  bool GetAutomatic() const { return _automatic; };
+  bool GetAutomatic() const { return _automatic; }
 
 private:
   Windows::ConfigFile _configfile;
