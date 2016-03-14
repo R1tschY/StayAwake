@@ -7,45 +7,74 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-12 19:04+0100\n"
-"PO-Revision-Date: 2016-03-12 19:05+0100\n"
+"POT-Creation-Date: 2016-03-14 01:01+0100\n"
+"PO-Revision-Date: 2016-03-14 01:21+0100\n"
+"Last-Translator: \n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.7\n"
-"Last-Translator: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"Language: de_DE\n"
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:186
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:135
+msgctxt "AboutDialog"
+msgid "Info about ..."
+msgstr "Über ..."
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:138
+msgid ""
+"This is free software and uses the <a>GNU General Public License Version 3</"
+"a>."
+msgstr ""
+"Dieses Programm ist freie Software und steht unter der <a>GNU General Public "
+"License Version 3</a>."
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:187
 msgid "Info ..."
 msgstr "&Über ..."
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:188
-msgid "Options ..."
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:189
+msgid "Options"
 msgstr "Einstellungen"
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:189
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:190
 msgid "Start with Windows"
 msgstr "Mit Windows starten"
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:190
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:191
 msgid "Activate with fullscreen window"
 msgstr "Bei Vollbildfenster aktivieren"
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:192
-msgid "Coffee icon"
-msgstr "Kaffee Icone"
-
 #: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:193
-msgid "Tea icon"
-msgstr "Tee Icone"
+msgid "Choco icon"
+msgstr "Kakao-Symbol"
 
 #: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:194
-msgid "Set icon"
-msgstr "Icone setzen"
+msgid "Tea icon"
+msgstr "Tee-Symbol"
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:198
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:195
+msgid "Set icon"
+msgstr "Symbol setzen"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:197
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:243
+msgid "Activate"
+msgstr "Aktivieren"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:199
 msgid "Quit"
 msgstr "&Beenden"
+
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:232
+#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:238
+msgid "Deactivate"
+msgstr "Deaktivieren"
+
+#~ msgid "Hello World!"
+#~ msgstr "Hallo Welt!"
+
+#~ msgid "Stay awake!"
+#~ msgstr "Wach bleiben!"

@@ -24,16 +24,22 @@
 
 #include <cpp-utils/strings/string_literal.h>
 #include <lightports/base/application.h>
+#include <boost/filesystem.hpp>
 #include "gettext.h"
 
+using namespace Windows;
 
 static int run()
 {
   using namespace boost::locale;
 
+  boost::filesystem::path local_path = Application::getExecutablePath();
+  local_path.remove_filename();
+  local_path /= L"locale";
+
   generator gen;
-  gen.add_messages_path("locale");
-  gen.add_messages_domain(PACKAGE_NAME);
+  gen.add_messages_path(local_path.string());
+  gen.add_messages_domain(PROJECT_NAME);
   std::locale::global(gen(""));
 
   try 
@@ -50,13 +56,13 @@ static int run()
   catch (const std::exception& e)
   {
     OutputDebugStringA(e.what());
-    MessageBoxA(NULL, e.what(), PACKAGE_NAME, MB_OK | MB_ICONERROR); 
+    MessageBoxA(NULL, e.what(), PROJECT_NAME, MB_OK | MB_ICONERROR);
     return 1;
   }
   catch(...)
   {
     OutputDebugStringA("Unknown exception happend.");
-    MessageBoxA(NULL, "Unknown exception happend.", PACKAGE_NAME, MB_OK | MB_ICONERROR);
+    MessageBoxA(NULL, "Unknown exception happend.", PROJECT_NAME, MB_OK | MB_ICONERROR);
     return 1;
   }
 }
@@ -70,6 +76,6 @@ int APIENTRY wWinMain(HINSTANCE hInst,
   UNREFERENCED_PARAMETER(lpCmdLine);
   UNREFERENCED_PARAMETER(nCmdShow);
 
-  Windows::Application app(wstring_literal(PACKAGE_NAME), hInst);
+  Windows::Application app(wstring_literal(PROJECT_NAME), hInst);
   return app.run(run);
 }

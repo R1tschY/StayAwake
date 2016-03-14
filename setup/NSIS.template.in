@@ -1,9 +1,7 @@
 #
-# setup_x86.nsi
-#
 #  This file is part of StayAwake.
 #
-#  Copyright (C) 2011-2012,2015 Richard Liebscher <r1tschy@yahoo.de>
+#  Copyright (C) 2011-2012,2015-2016 Richard Liebscher <r1tschy@yahoo.de>
 #
 #  StayAwake is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -19,42 +17,51 @@
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-Name "StayAwake"
-!define NAME "StayAwake"
+!define NAME "@CPACK_NSIS_PACKAGE_NAME@"
+!define VERSION "@CPACK_PACKAGE_VERSION@"
+!define PATCH  "@CPACK_PACKAGE_VERSION_PATCH@"
+!define INST_DIR "@CPACK_TEMPORARY_DIRECTORY@"
 
-SetCompressor /SOLID lzma
+Name "@CPACK_NSIS_PACKAGE_NAME@"
+OutFile "@CPACK_TOPLEVEL_DIRECTORY@/@CPACK_OUTPUT_FILE_NAME@"
+
+SetCompressor @CPACK_NSIS_COMPRESSOR@
 
 RequestExecutionLevel admin
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\${NAME}"
-!define VERSION 0.3.0.0
-!define COMPANY "Richard Liebscher"
-!define URL https://github.com/R1tschY/StayAwake
 
 # MUI Symbol Definitions
-!define MUI_ICON "${NSISDIR}\Contrib\Graphics\Icons\orange-install.ico"
+!define MUI_ICON "@CPACK_PACKAGE_ICON@"
+!define MUI_UNICON "@CPACK_PACKAGE_ICON@"
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_LICENSEPAGE_CHECKBOX
 !define MUI_STARTMENUPAGE_REGISTRY_ROOT HKLM
 !define MUI_STARTMENUPAGE_REGISTRY_KEY ${REGKEY}
-!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME StartMenuGroup
-!define MUI_STARTMENUPAGE_DEFAULTFOLDER "StayAwake"
-!define MUI_FINISHPAGE_RUN $INSTDIR\StayAwake.exe
-!define MUI_UNICON "${NSISDIR}\Contrib\Graphics\Icons\orange-uninstall.ico"
+!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME STARTMENU_FOLDER
+!define MUI_STARTMENUPAGE_DEFAULTFOLDER "${NAME}"
+@CPACK_NSIS_INSTALLER_MUI_FINISHPAGE_RUN_CODE@
+@CPACK_NSIS_INSTALLER_ICON_CODE@
+@CPACK_NSIS_INSTALLER_MUI_COMPONENTS_DESC@  
+
+@CPACK_NSIS_DEFINES@
 
 # Included files
 !include Sections.nsh
 !include MUI2.nsh
 
 # Variables
-Var StartMenuGroup
+Var STARTMENU_FOLDER
 
 # Installer pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "..\GPL-3.0.txt"
+!insertmacro MUI_PAGE_LICENSE "@CPACK_RESOURCE_FILE_LICENSE@"
 !insertmacro MUI_PAGE_DIRECTORY
-!insertmacro MUI_PAGE_STARTMENU Application $StartMenuGroup
+!insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
+
+@CPACK_NSIS_PAGE_COMPONENTS@
+
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
 !insertmacro MUI_UNPAGE_CONFIRM
@@ -65,19 +72,11 @@ Var StartMenuGroup
 !insertmacro MUI_LANGUAGE German
 
 # Installer attributes
-OutFile stayawake-${VERSION}-x86-setup.exe
-InstallDir $PROGRAMFILES32\StayAwake
+InstallDir "@CPACK_NSIS_INSTALL_ROOT@\@CPACK_PACKAGE_INSTALL_DIRECTORY@"
 CRCCheck on
 XPStyle on
 ShowInstDetails show
-VIProductVersion ${VERSION}.0
-VIAddVersionKey /LANG=${LANG_GERMAN} ProductName "$(^Name)"
-VIAddVersionKey /LANG=${LANG_GERMAN} ProductVersion "${VERSION}"
-VIAddVersionKey /LANG=${LANG_GERMAN} CompanyName "${COMPANY}"
-VIAddVersionKey /LANG=${LANG_GERMAN} CompanyWebsite "${URL}"
-VIAddVersionKey /LANG=${LANG_GERMAN} FileVersion "${VERSION}"
-VIAddVersionKey /LANG=${LANG_GERMAN} FileDescription ""
-VIAddVersionKey /LANG=${LANG_GERMAN} LegalCopyright ""
+VIProductVersion ${VERSION}.${PATCH}
 InstallDirRegKey HKLM "${REGKEY}" Path
 ShowUninstDetails show
 
@@ -85,10 +84,8 @@ ShowUninstDetails show
 Section -Main SEC0000
     SetOutPath $INSTDIR
     SetOverwrite on
-    File ..\Release\StayAwake.exe
-    File ...\GPL-3.0.txt
-    File x86\msvcp100.dll
-    File x86\msvcr100.dll
+    @CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS@
+    @CPACK_NSIS_FULL_INSTALL@
     WriteRegStr HKLM "${REGKEY}\Components" Main 1
 SectionEnd
 
@@ -97,18 +94,22 @@ Section -post SEC0001
     SetOutPath $INSTDIR
     WriteUninstaller $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-    SetOutPath $SMPROGRAMS\$StartMenuGroup
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\StayAwake.exe
-    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk" $INSTDIR\uninstall.exe
+    SetOutPath "$SMPROGRAMS\$STARTMENU_FOLDER"
+    @CPACK_NSIS_CREATE_ICONS@
+    @CPACK_NSIS_CREATE_ICONS_EXTRA@
+    CreateShortcut "$SMPROGRAMS\$STARTMENU_FOLDER\$(^UninstallLink).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" DisplayName "$(^Name)"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" DisplayVersion "${VERSION}"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" Publisher "${COMPANY}"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" URLInfoAbout "${URL}"
-    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" DisplayIcon $INSTDIR\uninstall.exe
+    
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" DisplayName "@CPACK_NSIS_DISPLAY_NAME@"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" DisplayVersion "@CPACK_PACKAGE_VERSION@"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" Publisher "@CPACK_PACKAGE_VENDOR@"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" URLInfoAbout "@CPACK_NSIS_URL_INFO_ABOUT@"
+    WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" DisplayIcon "$INSTDIR\@CPACK_NSIS_INSTALLED_ICON_NAME@"
     WriteRegStr HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" UninstallString $INSTDIR\uninstall.exe
     WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" NoModify 1
     WriteRegDWORD HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}" NoRepair 1
+    
+    @CPACK_NSIS_EXTRA_INSTALL_COMMANDS@
 SectionEnd
 
 # Macro for selecting uninstaller sections
@@ -126,27 +127,25 @@ done${UNSECTION_ID}:
 
 # Uninstaller sections
 Section /o -un.Main UNSEC0000
-    Delete /REBOOTOK $INSTDIR\StayAwake.exe
-    Delete /REBOOTOK $INSTDIR\GPL-3.0.txt
-    Delete /REBOOTOK $INSTDIR\msvcp100.dll
-    Delete /REBOOTOK $INSTDIR\msvcr100.dll
+    @CPACK_NSIS_DELETE_FILES@
+    @CPACK_NSIS_DELETE_DIRECTORIES@
     DeleteRegValue HKLM "${REGKEY}\Components" Main
 SectionEnd
 
 Section -un.post UNSEC0001
     DeleteRegKey HKCU "${REGKEY}"
-    DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" StayAwake
+    DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" ${NAME}
     DeleteRegKey HKLM "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\${NAME}"
-    Delete /REBOOTOK "$SMPROGRAMS\$StartMenuGroup\$(^UninstallLink).lnk"
+    Delete /REBOOTOK "$SMPROGRAMS\$STARTMENU_FOLDER\$(^UninstallLink).lnk"
     Delete /REBOOTOK $INSTDIR\uninstall.exe
-    DeleteRegValue HKLM "${REGKEY}" StartMenuGroup
+    DeleteRegValue HKLM "${REGKEY}" STARTMENU_FOLDER
     DeleteRegValue HKLM "${REGKEY}" Path
     DeleteRegKey HKLM "${REGKEY}\Components"
     DeleteRegKey HKLM "${REGKEY}"
-    RmDir /REBOOTOK $SMPROGRAMS\$StartMenuGroup
+    RmDir /REBOOTOK $SMPROGRAMS\$STARTMENU_FOLDER
     RmDir /REBOOTOK $INSTDIR
     Push $R0
-    StrCpy $R0 $StartMenuGroup 1
+    StrCpy $R0 $STARTMENU_FOLDER 1
     StrCmp $R0 ">" no_smgroup
 no_smgroup:
     Pop $R0
@@ -161,7 +160,7 @@ FunctionEnd
 Function un.onInit
     SetAutoClose true
     ReadRegStr $INSTDIR HKLM "${REGKEY}" Path
-    !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuGroup
+    !insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER
     !insertmacro SELECT_UNSECTION Main ${UNSEC0000}
 FunctionEnd
 

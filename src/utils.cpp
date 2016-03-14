@@ -25,7 +25,7 @@
 #include <memory>
 #include <iostream>
 
-#include "config.h.in"
+#include "config.h"
 #include "resource.h"
 
 std::wstring

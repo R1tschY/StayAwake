@@ -19,24 +19,26 @@
 
 #include "properties.h"
 
-#include "config.h.in"
+#include "config.h"
 #include "stdafx.h"
 
 #include "utils.h"
 #include <cpp-utils/preprocessor.h>
 #include <lightports/base/application.h>
 #include <lightports/extra/autostart.h>
+#include <boost/filesystem.hpp>
 
-const wchar_t * const Properties::Filename = CPP_WSTRINGIFY(PACKAGE_NAME) L".ini";
+namespace fs = boost::filesystem;
 
 Properties::Properties() 
 {
-  std::wstring path = Windows::Application::getExecutablePath().getFolder();
-  path.append(Filename);
+  fs::path path = Windows::Application::getConfigPath();
+  path /= CPP_TO_WIDESTRING(PROJECT_NAME) L".ini";
 
   // Load Configuration
-  _configfile.loadFromFile(path);
+  _configfile.loadFromFile(path.wstring());
   _automatic = _configfile.getInteger(L"common", L"automatic", AutomaticDefault);
+  icon_ = static_cast<IconEntry>(_configfile.getInteger(L"common", L"icon", IconDefault));
   _startup = Windows::isProgramInAutostart();
 }
 
@@ -57,4 +59,13 @@ void Properties::SetAutomatic(bool value) {
 
   _automatic = value;
   _configfile.setInteger(L"common", L"automatic", value);
+}
+
+void Properties::SetIcon(IconEntry value)
+{
+  if (value == icon_)
+    return;
+
+  icon_ = value;
+  _configfile.setInteger(L"common", L"icon", icon_);
 }

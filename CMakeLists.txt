@@ -3,20 +3,35 @@ if (NOT WIN32 AND NOT CMAKE_TOOLCHAIN_FILE)
 	set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/cmake/toolchain-cross-mingw64.cmake")
 endif()
 
+
+SET(CMAKE_AR gcc-ar)
+SET(CMAKE_NM gcc-nm)
+SET(CMAKE_RANLIB gcc-ranlib)
+
 cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.2)
 cmake_policy(SET CMP0048 NEW)
 
 project(StayAwake VERSION 0.4 LANGUAGES CXX)
 set(PROJECT_AUTHOR "Richard Liebscher")
-set(PROJECT_COPYRIGHT "Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>")
+set(PROJECT_DESCRIPTION "status icon for blocking screensaver and standby in Windows")
+set(PROJECT_DESCRIPTION_DE "Statusymbol zur Blockieren von Screensaver und Standby in Windows")
+set(PROJECT_COPYRIGHT "Copyright (C) 2010,2015,2016 Richard Liebscher <r1tschy@yahoo.de>")
+set(PROJECT_URL "https://github.com/R1tschY/StayAwake")
+set(PROJECT_LONGVERSION "${PROJECT_VERSION}.0.0")
+string(REGEX REPLACE "\\." "," PROJECT_VERSIONINFO "${PROJECT_LONGVERSION}")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
 
+# Debug mode
+set(CMAKE_CXX_FLAGS_DEBUG "-Og -g -D_DEBUG")
+
+# Release mode
+set(CMAKE_CXX_FLAGS_RELEASE "-s -O2 -DNDEBUG")
+
 # Windows
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -mwindows -municode -static-libgcc -static-libstdc++")
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows -municode  -static-libgcc -static-libstdc++")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -municode -static-libgcc -static-libstdc++")
 
 # UNICODE
 add_definitions(-DUNICODE -D_UNICODE)

@@ -24,7 +24,7 @@
 #include <strsafe.h>
 #include <utility>
 
-#include "config.h.in"
+#include "config.h"
 #include <cpp-utils/preprocessor.h>
 #include <cpp-utils/assert.h>
 #include <cpp-utils/strings/string_literal.h>
@@ -33,6 +33,8 @@
 
 #include "resource.h"
 #include "utils.h"
+
+using namespace Windows;
 
 StayAwake::StayAwake(HWND hwnd) : 
   automatic_(false),
@@ -130,10 +132,10 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   switch (message)
   {
   case WM_INITDIALOG: {
-    SetWindowTextW(hDlg, getResourceString(nullptr, IDS_ABOUT_TITLE).c_str());
-    SetDlgItemTextW(hDlg, IDC_VERSION, CPP_WSTRINGIFY(PACKAGE_NAME) L", Version " CPP_WSTRINGIFY(PACKAGE_VERSION));
-    SetDlgItemTextW(hDlg, IDC_COPYRIGHT, CPP_WSTRINGIFY(PACKAGE_COPYRIGHT));
-    SetDlgItemTextW(hDlg, IDC_GPL, getResourceString(nullptr, IDS_GPL).c_str());
+    SetWindowTextW(hDlg, P_(L"AboutDialog", L"Info about ...").c_str());
+    SetDlgItemTextW(hDlg, IDC_VERSION, CPP_TO_WIDESTRING(PROJECT_NAME) L", Version " CPP_TO_WIDESTRING(PROJECT_VERSION));
+    SetDlgItemTextW(hDlg, IDC_COPYRIGHT, CPP_TO_WIDESTRING(PROJECT_COPYRIGHT));
+    SetDlgItemTextW(hDlg, IDC_GPL, _(L"This is free software and uses the <a>GNU General Public License Version 3</a>.").c_str());
     return (INT_PTR)TRUE;
   }
 
@@ -164,26 +166,22 @@ StayAwakeUi::StayAwakeUi(HINSTANCE hinstance) :
 
   hinstance_(hinstance),
   trayicon_(),
-  coffein_(0),
-
-  activate_string_(getResourceString(hinstance_, IDS_POPUP_SET)),
-  deactivate_string_(getResourceString(hinstance_, IDS_POPUP_UNSET)),
-  auto_activated_string_(getResourceString(hinstance_, IDS_POPUP_AUTO_SET))
+  coffein_(0)
 {
   create(nullptr, wstring_literal("StayAwake"));
 }
 
 void StayAwakeUi::onCreate()
 {
-  active_icon_ = loadResourceIcon(hinstance_, IDI_CUP_FULL, 0);
-  inactive_icon_ = loadResourceIcon(hinstance_, IDI_CUP_EMPTY, 0);
-
   auto autostart_flags = properties_.GetStartup()
     ? Windows::MenuEntryFlags::Checked
     : Windows::MenuEntryFlags::Unchecked;
   auto automatic_flags = properties_.GetAutomatic()
     ? Windows::MenuEntryFlags::Checked
     : Windows::MenuEntryFlags::Unchecked;
+
+  IconEntry icon = properties_.GetIcon();
+  onIconSet(icon);
 
   popup_menu_ = Windows::Menu::createPopupMenu();
   popup_menu_.addEntry(InfoEntry, _(L"Info ..."));
@@ -192,14 +190,14 @@ void StayAwakeUi::onCreate()
   popup_menu_.addEntry(AutostartEntry, _(L"Start with Windows"), autostart_flags);
   popup_menu_.addEntry(AutomaticEntry, _(L"Activate with fullscreen window"), automatic_flags);
   icon_menu_ = Windows::Menu::createPopupMenu();
-  icon_menu_.addEntry(CoffeeEntry, _(L"Coffee icon"));
-  icon_menu_.addEntry(TeaEntry, _(L"Tea icon"));
+  icon_menu_.addEntry(ChocoEntry, _(L"Choco icon"), icon == ChocoEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked );
+  icon_menu_.addEntry(TeaEntry, _(L"Tea icon"), icon == TeaEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked);
   popup_menu_.addMenu(_(L"Set icon"), icon_menu_);
   popup_menu_.addSeperator();
-  popup_menu_.addEntry(SetManuellEntry, activate_string_);
+  popup_menu_.addEntry(SetManuellEntry, _(L"Activate"));
   popup_menu_.addSeperator();
   popup_menu_.addEntry(ExitEntry, _(L"Quit"));
-  trayicon_.add(getNativeHandle(), inactive_icon_, wstring_literal(PACKAGE_NAME));
+  trayicon_.add(getNativeHandle(), inactive_icon_, wstring_literal(PROJECT_NAME));
 
   coffein_.setParent(getNativeHandle());
   coffein_.setAutomatic(properties_.GetAutomatic());
@@ -227,22 +225,22 @@ StayAwakeUi::onManuellSet(bool value)
 }
 
 void
-StayAwakeUi::onStateChanged(bool newstate)
+StayAwakeUi::onStateChanged()
 {
   if (coffein_.getAutomaticState())
   {
-    popup_menu_.enable(SetManuellEntry, false, true);
+    popup_menu_.modifyEntry(SetManuellEntry, _(L"Deactivate"), MenuEntryFlags::Grayed);
     trayicon_.setIcon(active_icon_);
     return;
   }
 
   if (coffein_.getManuellState()) {
-    popup_menu_.enable(SetManuellEntry, true);
+    popup_menu_.modifyEntry(SetManuellEntry, _(L"Deactivate"), MenuEntryFlags::Enabled);
     trayicon_.setIcon(active_icon_);
   }
   else
   {
-    popup_menu_.enable(SetManuellEntry, true);
+    popup_menu_.modifyEntry(SetManuellEntry, _(L"Activate"), MenuEntryFlags::Enabled);
     trayicon_.setIcon(inactive_icon_);
   }
 }
@@ -260,6 +258,28 @@ void StayAwakeUi::onAutomaticSet(bool value)
   popup_menu_.check(AutomaticEntry, value);
 }
 
+void StayAwakeUi::onIconSet(IconEntry icon)
+{
+  switch(icon)
+  {
+  case ChocoEntry:
+    active_icon_ = loadResourceIcon(hinstance_, IDI_CHOCO_FULL, 0);
+    inactive_icon_ = loadResourceIcon(hinstance_, IDI_CHOCO_EMPTY, 0);
+    break;
+
+  case TeaEntry:
+    active_icon_ = loadResourceIcon(hinstance_, IDI_TEA_FULL, 0);
+    inactive_icon_ = loadResourceIcon(hinstance_, IDI_TEA_EMPTY, 0);
+    break;
+  }
+
+  icon_menu_.check(ChocoEntry, icon == ChocoEntry);
+  icon_menu_.check(TeaEntry, icon == TeaEntry);
+
+  properties_.SetIcon(icon);
+  onStateChanged();
+}
+
 void StayAwakeUi::onAbout()
 {
   DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), getNativeHandle(), About);
@@ -270,7 +290,7 @@ void StayAwakeUi::onContextMenu(int x, int y)
   SetForegroundWindow(getNativeHandle());
   TrackPopupMenu(popup_menu_.getHMENU(), 
 		  TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
-      x, y, 0, getNativeHandle(), nullptr);
+                 x, y, 0, getNativeHandle(), nullptr);
 }
 
 LRESULT 
@@ -301,6 +321,11 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
 
     case SetManuellEntry:
       onManuellSet(!coffein_.getManuellState());
+      break;
+
+    case ChocoEntry:
+    case TeaEntry:
+      onIconSet(static_cast<IconEntry>(wmId));
       break;
 
     case ExitEntry:
@@ -345,9 +370,9 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
     break;
 
   case StayAwake::WM_STATE_CHANGED:
-    onStateChanged(wparam != 0);
+    onStateChanged();
     break;
   }
 
-  return Windows::Window::onMessage(msg, wparam, lparam);
+  return Window::onMessage(msg, wparam, lparam);
 }

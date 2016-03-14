@@ -34,32 +34,128 @@ set_target_properties(stayawake PROPERTIES
 find_package(Gettext REQUIRED)
 find_program(XGETTEXT_EXE xgettext)
 
-set(PROJECT_POT_FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}.pot")
-message(STATUS "Pot file: ${PROJECT_POT_FILE}")
-add_custom_command(OUTPUT ${PROJECT_POT_FILE}
-    COMMAND ${XGETTEXT_EXE} -o ${PROJECT_POT_FILE} ${stayawake_SOURCES}
-              -c++
-              --keyword=gettext:1 --keyword=pgettext:1c,2
-              --keyword=ngettext:1,2 --keyword=npgettext:1c,2,3
-              --keyword=_:1 --keyword=P_:1c,2
-              --keyword=N_:1,2 --keyword=NP_:1c,2,3
-              --package-name=${PROJECT_NAME} --package-name=${PROJECT_VERSION}
-    DEPENDS ${stayawake_SOURCES}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Extract translatable messages to ${PROJECT_POT_FILE}"
-)
-add_custom_target(pot_file DEPENDS ${PROJECT_POT_FILE})
+# Generate pot-file from sources
+# add_gettext_sources(domain_name
+#                     OUTPUT file.pot
+#                     SOURCES source1.c source2.cpp ...)
+function(add_gettext_sources _domain_name)
+    set(oneValueArgs OUTPUT)
+    set(multiValueArgs SOURCES)
+    set(prefix _add_gettext_sources)
+    cmake_parse_arguments(${prefix} "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
-foreach(_current_PO_FILE ${stayawake_PO_FILES})
-   get_filename_component(_name ${_current_PO_FILE} NAME)
-   string(REGEX REPLACE "^(.+)(\\.[^.]+)$" "\\1" _lang ${_name})
-   set(_mo_file ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/locale/${_lang}/LC_MESSAGES/${PROJECT_NAME}.mo)
-   add_custom_command(OUTPUT ${_mo_file}
-       COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/locale/${_lang}/LC_MESSAGES
-       COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_mo_file} ${_current_PO_FILE}
-       WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-       DEPENDS ${_current_PO_FILE}
-   )
-   list(APPEND _mo_files ${_mo_file})
-endforeach()
-add_custom_target(pofiles ALL DEPENDS ${_mo_files})
+    get_filename_component(_pot_file ${${prefix}_OUTPUT} ABSOLUTE)
+
+    add_custom_command(OUTPUT ${_pot_file}
+        COMMAND ${XGETTEXT_EXE} -o ${_pot_file} ${${prefix}_SOURCES}
+                  -c++
+                  --keyword=gettext:1 --keyword=pgettext:1c,2
+                  --keyword=ngettext:1,2 --keyword=npgettext:1c,2,3
+                  --keyword=_:1 --keyword=P_:1c,2
+                  --keyword=N_:1,2 --keyword=NP_:1c,2,3
+                  --package-name=${PROJECT_NAME} --package-name=${PROJECT_VERSION}
+        DEPENDS ${${prefix}_SOURCES}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Extract translatable messages to ${_pot_file}"
+    )
+    add_custom_target(${_domain_name}_pot ALL DEPENDS ${_pot_file})
+endfunction()
+
+# Generate mo-files from (updated) po-files.
+# add_gettext_translations(domain_name
+#                          [EXCLUDE_FROM_ALL]
+#                          [UPDATE_FROM file.pot]
+#                          OUTPUTDIR local_dir
+#                          SOURCES lang1.po lang2.po ...)
+function(add_gettext_translations _domain_name)
+    # options
+    set(_options EXCLUDE_FROM_ALL)
+    set(oneValueArgs OUTPUTDIR UPDATE_FROM)
+    set(multiValueArgs SOURCES)
+    set(prefix _add_gettext_translations)
+    cmake_parse_arguments(${prefix} "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    # iterate over po files
+    foreach(_current_PO_FILE ${${prefix}_SOURCES})
+        # get lang from po-file basename
+        get_filename_component(_lang ${_current_PO_FILE} NAME_WE)
+
+        if (${prefix}_UPDATE_FROM)
+            # update po-file from pot-file and compile it to a mo-file
+            add_custom_command(
+                OUTPUT ${_current_PO_FILE}
+                COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --quiet --update --backup=t ${_current_PO_FILE} ${${prefix}_UPDATE_FROM}
+                WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+                DEPENDS ${${prefix}_UPDATE_FROM}
+                COMMENT "Updating ${_current_PO_FILE}"
+            )
+        endif()
+
+        # build destination folder
+        set(_mo_file "${${prefix}_OUTPUTDIR}/${_lang}/LC_MESSAGES/${_domain_name}.mo")
+
+        # compile po-file to a mo-file
+        add_custom_command(
+            OUTPUT ${_mo_file}
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${${prefix}_OUTPUTDIR}/${_lang}/LC_MESSAGES"
+            COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} -o ${_mo_file} ${_current_PO_FILE}
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            DEPENDS ${_current_PO_FILE}
+        )
+
+        # list all mo-files
+        list(APPEND _mo_files ${_mo_file})
+    endforeach()
+
+    # create target
+    if(${prefix}_EXCLUDE_FROM_ALL)
+       add_custom_target(${_domain_name}_mo DEPENDS ${_mo_files})
+    else()
+       add_custom_target(${_domain_name}_mo ALL DEPENDS ${_mo_files})
+    endif()
+endfunction()
+
+
+
+
+add_gettext_sources(
+    ${PROJECT_NAME}
+    SOURCES ${stayawake_SOURCES}
+    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/../po/${PROJECT_NAME}.pot"
+)
+
+add_gettext_translations(
+    ${PROJECT_NAME}
+    UPDATE_FROM "${CMAKE_CURRENT_SOURCE_DIR}/../po/${PROJECT_NAME}.pot"
+    SOURCES  ${stayawake_PO_FILES}
+    OUTPUTDIR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/locale"
+)
+
+
+# install
+install(TARGETS stayawake DESTINATION .)
+install(DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/locale" DESTINATION .)
+
+# installer
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/setup ${CMAKE_MODULE_PATH})
+
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "${PROJECT_DESCRIPTION}")
+set(CPACK_PACKAGE_EXECUTABLES "stayawake;StayAwake")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY ${PROJECT_NAME})
+set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY ${PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "${PROJECT_AUTHOR}")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/../GPL-3.0.txt")
+set(CPACK_PACKAGE_VERSION_MAJOR "${${PROJECT_NAME}_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${${PROJECT_NAME}_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "0")
+set(CPACK_MONOLITHIC_INSTALL ON)
+
+set(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/img/appicon.ico")
+set(CPACK_NSIS_INSTALLED_ICON_NAME "stayawake.exe")
+set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/R1tschY/StayAwake")
+set(CPACK_NSIS_MODIFY_PATH ON)
+set(CPACK_NSIS_COMPRESSOR "/SOLID lzma")
+set(CPACK_NSIS_EXECUTABLES_DIRECTORY ".")
+set(CPACK_NSIS_MUI_FINISHPAGE_RUN "stayawake.exe")
+
+include(CPack)

@@ -10,12 +10,9 @@
 #define IDS_GPL                         110
 #define IDS_POPUP_AUTO_SET              111
 #define IDS_ABOUT_TITLE                 112
-#define IDS_STRING113                   113
 #define IDR_MAINFRAME                   128
 #define IDS_POPUP_SET                   132
 #define IDS_POPUP_UNSET                 133
-#define IDI_CUP_FULL                    200
-#define IDI_CUP_EMPTY                   201
 #define IDM_PRO                         403
 #define IDD_ABOUTBOX                    701
 #define IDC_SYSLINK1                    1001
@@ -24,14 +21,9 @@
 #define IDC_GPL                         1044
 #define IDC_STATIC                      -1
 
-// Next default values for new objects
-//
-#ifdef APSTUDIO_INVOKED
-#ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        133
-#define _APS_NEXT_COMMAND_VALUE         32778
-#define _APS_NEXT_CONTROL_VALUE         1045
-#define _APS_NEXT_SYMED_VALUE           110
-#endif
-#endif
+
+#define IDI_APP_ICON                    100
+#define IDI_TEA_FULL                    300
+#define IDI_TEA_EMPTY                   301
+#define IDI_CHOCO_FULL                  310
+#define IDI_CHOCO_EMPTY                 311

@@ -23,6 +23,11 @@
 #include "stdafx.h"
 #include <lightports/base/configfile.h>
 
+enum IconEntry {
+  ChocoEntry = 1500,
+  TeaEntry
+};
+
 class Properties {
 public:
   Properties();
@@ -35,13 +40,16 @@ public:
   void SetAutomatic(bool value);
   bool GetAutomatic() const { return _automatic; }
 
+  static const IconEntry IconDefault = TeaEntry;
+  void SetIcon(IconEntry value);
+  IconEntry GetIcon() const { return icon_; }
+
 private:
   Windows::ConfigFile _configfile;
-
-  static const wchar_t * const Filename;
   
   bool _startup;
   bool _automatic;
+  IconEntry icon_;
 };
 
 #endif // __PROPERTIES_H__

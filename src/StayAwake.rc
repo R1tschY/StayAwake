@@ -1,20 +1,9 @@
-﻿// Microsoft Visual C++ generated resource script.
-//
-#include "resource.h"
-
-#define APSTUDIO_READONLY_SYMBOLS
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 2 resource.
-//
-
+﻿#include "resource.h"
 #include "config.h"
-#define APSTUDIO_HIDDEN_SYMBOLS
-#include "windows.h"
-#undef APSTUDIO_HIDDEN_SYMBOLS
+#include <windows.h>
 
-/////////////////////////////////////////////////////////////////////////////
-#undef APSTUDIO_READONLY_SYMBOLS
+// Manifest
+CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "stayawake.manifest"
 
 /////////////////////////////////////////////////////////////////////////////
 // Neutral resources
@@ -29,8 +18,11 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_CUP_FULL            ICON                    "img\\full.ico"
-IDI_CUP_EMPTY           ICON                    "img\\empty.ico"
+IDI_APP_ICON            ICON                    "img\\appicon.ico"
+IDI_TEA_FULL            ICON                    "img\\tea-16-full.ico"
+IDI_TEA_EMPTY           ICON                    "img\\tea-16-empty.ico"
+IDI_CHOCO_FULL            ICON                    "img\\hot-chocolate-16-full.ico"
+IDI_CHOCO_EMPTY           ICON                    "img\\hot-chocolate-16-empty.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -43,102 +35,14 @@ EXSTYLE WS_EX_APPWINDOW | WS_EX_COMPOSITED
 CAPTION "TITLE"
 FONT 9, "Verdana", 400, 0, 0x0
 BEGIN
-    ICON            IDI_CUP_FULL,IDC_STATIC,10,10,20,20
+    ICON            IDI_APP_ICON,IDC_STATIC,5,5,64,64
     LTEXT           "VERSION",IDC_VERSION,31,7,212,8,SS_NOPREFIX
     LTEXT           "COPYRIGHT",IDC_COPYRIGHT,31,22,212,8
     DEFPUSHBUTTON   "OK",IDOK,100,66,50,14,WS_GROUP
     CONTROL         "<a>GPL</a>",IDC_GPL,"SysLink",WS_TABSTOP,31,34,212,32
 END
 
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// DESIGNINFO
-//
-
-#ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO
-BEGIN
-    IDD_ABOUTBOX, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 243
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 80
-    END
-END
-#endif    // APSTUDIO_INVOKED
-
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
-//
-
-1 TEXTINCLUDE 
-BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE 
-BEGIN
-    "#ifndef APSTUDIO_INVOKED\r\n"
-    "#include ""targetver.h""\r\n"
-    "#endif\r\n"
-    "#include ""version.h""\r\n"
-    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "#include ""windows.h""\r\n"
-    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE 
-BEGIN
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
-
 #endif    // Neutral resources
-/////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Deutsch resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
-LANGUAGE LANG_GERMAN, SUBLANG_NEUTRAL
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE
-BEGIN
-    IDS_POPUP_INFO          "&Info ..."
-    IDS_POPUP_OPTIONS       "Einstellungen"
-    IDS_POPUP_AUTOSTART     "Mit Windows starten"
-    IDS_POPUP_AUTOMATIC     "Bei Vollbildfenster aktivieren"
-    IDS_POPUP_EXIT          "&Beenden"
-    IDS_GPL                 "Dieses Programm ist freie Software und steht unter der <a>GNU General Public License Version 3</a>."
-    IDS_POPUP_AUTO_SET      "Aktiviert (wegen Vollbildfenster)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_POPUP_SET           "Aktivieren"
-    IDS_POPUP_UNSET         "Deaktivieren"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_ABOUT_TITLE         "Info über "
-END
-
-#endif    // Deutsch resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -154,76 +58,48 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0,3,0,0
- PRODUCTVERSION 0,3,0,0
+ FILEVERSION PROJECT_VERSIONINFO
+ PRODUCTVERSION PROJECT_VERSIONINFO
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
- FILEFLAGS 0x1L
+ FILEFLAGS VS_FF_DEBUG
 #else
  FILEFLAGS 0x0L
 #endif
- FILEOS 0x40004L
- FILETYPE 0x1L
+ FILEOS VOS_NT
+ FILETYPE VFT_APP
  FILESUBTYPE 0x0L
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", PROJECT_COMPANY
+            VALUE "FileDescription", PROJECT_DESCRIPTION
+            VALUE "FileVersion", PROJECT_LONGVERSION
+            VALUE "LegalCopyright", PROJECT_COPYRIGHT
+            VALUE "ProductName", PROJECT_NAME
+            VALUE "ProductVersion", PROJECT_LONGVERSION
+        END
+    END
+    BLOCK "StringFileInfo"
+    BEGIN
         BLOCK "040704b0"
         BEGIN
-            VALUE "CompanyName", PACKAGE_COMPANY
-            VALUE "FileDescription", "Statusicon for deactivating screensaver and standby"
-            VALUE "FileVersion", PACKAGE_VERSION ".0.0"
-            VALUE "LegalCopyright", PACKAGE_COPYRIGHT
-            VALUE "ProductName", PACKAGE_NAME
-            VALUE "ProductVersion", PACKAGE_VERSION ".0.0"
+            VALUE "CompanyName", PROJECT_COMPANY
+            VALUE "FileDescription", PROJECT_DESCRIPTION_DE
+            VALUE "FileVersion", PROJECT_LONGVERSION
+            VALUE "LegalCopyright", PROJECT_COPYRIGHT
+            VALUE "ProductName", PROJECT_NAME
+            VALUE "ProductVersion", PROJECT_LONGVERSION
         END
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x407, 1200
+        VALUE "Translation", 0x409, 1200, 0x0407, 1200
     END
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// String Table
-//
-
-STRINGTABLE
-BEGIN
-    IDS_POPUP_INFO          "&Info ..."
-    IDS_POPUP_OPTIONS       "Options"
-    IDS_POPUP_AUTOSTART     "Start with Windows"
-    IDS_POPUP_AUTOMATIC     "Activate with fullscreen window"
-    IDS_POPUP_EXIT          "&Quit"
-    IDS_GPL                 "This is free software and uses the <a>GNU General Public License Version 3</a>."
-    IDS_POPUP_AUTO_SET      "Activated (due to fullscreen window)"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_POPUP_SET           "Activate"
-    IDS_POPUP_UNSET         "Deactivate"
-END
-
-STRINGTABLE
-BEGIN
-    IDS_ABOUT_TITLE         "Info about "
 END
 
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
-
-
-
-#ifndef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// Generated from the TEXTINCLUDE 3 resource.
-//
-
-
-/////////////////////////////////////////////////////////////////////////////
-#endif    // not APSTUDIO_INVOKED
 

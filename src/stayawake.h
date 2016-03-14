@@ -72,12 +72,13 @@ public:
   StayAwakeUi(HINSTANCE hInstance);
   ~StayAwakeUi();
 
-  void onStateChanged(bool newstate);
+  void onStateChanged();
   void onManuellSet(bool value);
   void onAutostartSet(bool value);
   void onAutomaticSet(bool value);
   void onAbout();
   void onContextMenu(int x, int y);
+  void onIconSet(IconEntry icon);
 
 private:
   enum PopupEntry {
@@ -92,13 +93,6 @@ private:
     ExitEntry
   };
 
-  enum IconEntry {
-    CoffeeEntry = 1500,
-    TeaEntry,
-    MateEntry,
-    ToGoEntry
-  };
-
   HINSTANCE hinstance_;
 
   Windows::TrayIcon trayicon_;
@@ -110,10 +104,6 @@ private:
 
   StayAwake coffein_;
   Properties properties_;
-
-  std::wstring activate_string_;
-  std::wstring deactivate_string_;
-  std::wstring auto_activated_string_;
 
   void onCreate() override;
   void onDestroy() override;
