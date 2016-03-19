@@ -1,4 +1,4 @@
-/* 
+/*
  * This file is part of StayAwake.
  *
  *  Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>
@@ -36,7 +36,7 @@
 
 using namespace Windows;
 
-StayAwake::StayAwake(HWND hwnd) : 
+StayAwake::StayAwake(HWND hwnd) :
   automatic_(false),
   manuell_state_(false),
   automatic_state_(false),
@@ -54,7 +54,7 @@ StayAwake::~StayAwake()
 
 void StayAwake::setAutomatic(bool value)
 {
-  if (automatic_ == value) 
+  if (automatic_ == value)
     return;
 
   automatic_ = value;
@@ -65,7 +65,7 @@ void StayAwake::setAutomatic(bool value)
 
 void StayAwake::setManuellState(bool value)
 {
-  if (manuell_state_ == value) 
+  if (manuell_state_ == value)
     return;
 
   manuell_state_ = value;
@@ -77,17 +77,16 @@ void StayAwake::setManuellState(bool value)
 void StayAwake::updateTimer()
 {
   bool state = (automatic_ || manuell_state_);
-
   if (state == is_timer_active_)
     return;
 
   is_timer_active_ = state;
 
-  if (state) 
+  if (state)
   {
     timeout_.setInterval(30 * 1000);
-  } 
-  else 
+  }
+  else
   {
     timeout_.setInterval(-1);
   }
@@ -97,23 +96,23 @@ void StayAwake::update()
 {
   if (automatic_)
   {
-    automatic_state_ = (getFullscreenWindow() != nullptr);    
+    automatic_state_ = (getFullscreenWindow() != nullptr);
   }
 
   bool state = getState();
 
   // if fullscreen window exists, work in polling mode.
-  if (state) 
+  if (state)
   {
     SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED);
   }
-  
-  if (state != last_state_) 
+
+  if (state != last_state_)
   {
     last_state_ = state;
     SendMessageW(hwnd_, WM_STATE_CHANGED, state, 0);
 
-    if (!state) 
+    if (!state)
     {
       // if no fullscreen window exists anymore, then activate normal mode.
       SetThreadExecutionState(ES_CONTINUOUS);
@@ -126,7 +125,7 @@ void StayAwake::update()
 
 static
 INT_PTR CALLBACK
-About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) 
+About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
   UNREFERENCED_PARAMETER(lParam);
   switch (message)
@@ -148,13 +147,13 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     break;
 
   case WM_NOTIFY: {
-    LPNMHDR evt = reinterpret_cast<LPNMHDR>(lParam); 
+    LPNMHDR evt = reinterpret_cast<LPNMHDR>(lParam);
     if (evt->code == NM_CLICK || evt->code == NM_RETURN)
-    {    
+    {
       if (evt->idFrom == IDC_GPL) {
         ShellExecuteW(hDlg, L"open", L"http://www.gnu.org/licenses/gpl-3.0.html", NULL, NULL, SW_SHOW);
       }
-    }    
+    }
     break;
   }
   }
@@ -215,12 +214,12 @@ StayAwakeUi::onDestroy()
   PostQuitMessage(0);
 }
 
-void 
+void
 StayAwakeUi::onManuellSet(bool value)
 {
-  if (value == coffein_.getManuellState())  
+  if (value == coffein_.getManuellState())
     return;
-  
+
   coffein_.setManuellState(value);
 }
 
@@ -229,7 +228,7 @@ StayAwakeUi::onStateChanged()
 {
   if (coffein_.getAutomaticState())
   {
-    popup_menu_.modifyEntry(SetManuellEntry, _(L"Deactivate"), MenuEntryFlags::Grayed);
+    popup_menu_.modifyEntry(SetManuellEntry, _(L"Automatic activated"), MenuEntryFlags::Grayed);
     trayicon_.setIcon(active_icon_);
     return;
   }
@@ -288,13 +287,13 @@ void StayAwakeUi::onAbout()
 void StayAwakeUi::onContextMenu(int x, int y)
 {
   SetForegroundWindow(getNativeHandle());
-  TrackPopupMenu(popup_menu_.getHMENU(), 
-		  TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
+  TrackPopupMenu(popup_menu_.getHMENU(),
+		  TPM_LEFTALIGN | TPM_RIGHTBUTTON,
                  x, y, 0, getNativeHandle(), nullptr);
 }
 
-LRESULT 
-StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam) 
+LRESULT
+StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
 {
   int wmId, wmEvent;
 
@@ -346,7 +345,7 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
       {
         // cannot deny standby
         return TRUE;
-      }      
+      }
     }
     return TRUE;
 
@@ -354,6 +353,9 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
   case Windows::TrayIcon::MessageId:
     trayicon_.handleMessage(wparam, lparam, [=](UINT timsg, int x, int y)
     {
+      POINT pt;
+      GetCursorPos(&pt);
+
       switch (timsg)
       {
       case WM_LBUTTONDOWN:
@@ -362,7 +364,7 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
 
       case WM_RBUTTONDOWN:
       case WM_CONTEXTMENU:
-        onContextMenu(x, y);
+        onContextMenu(pt.x, pt.y);
         return 1;
       }
       return 0;

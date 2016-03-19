@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-14 01:01+0100\n"
+"POT-Creation-Date: 2016-03-19 21:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,55 +17,57 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:135
+#: stayawake.cpp:135
 msgctxt "AboutDialog"
 msgid "Info about ..."
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:138
+#: stayawake.cpp:138
 msgid ""
 "This is free software and uses the <a>GNU General Public License Version 3</"
 "a>."
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:187
+#: stayawake.cpp:187
 msgid "Info ..."
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:189
+#: stayawake.cpp:189
 msgid "Options"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:190
+#: stayawake.cpp:190
 msgid "Start with Windows"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:191
+#: stayawake.cpp:191
 msgid "Activate with fullscreen window"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:193
+#: stayawake.cpp:193
 msgid "Choco icon"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:194
+#: stayawake.cpp:194
 msgid "Tea icon"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:195
+#: stayawake.cpp:195
 msgid "Set icon"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:197
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:243
+#: stayawake.cpp:197 stayawake.cpp:243
 msgid "Activate"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:199
+#: stayawake.cpp:199
 msgid "Quit"
 msgstr ""
 
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:232
-#: C:/Users/Richard/Documents/GitHub/Caffeine/src/stayawake.cpp:238
+#: stayawake.cpp:232
+msgid "Automatic activated"
+msgstr ""
+
+#: stayawake.cpp:238
 msgid "Deactivate"
 msgstr ""
