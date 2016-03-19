@@ -18,11 +18,11 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_APP_ICON            ICON                    "img\\appicon.ico"
-IDI_TEA_FULL            ICON                    "img\\tea-16-full.ico"
-IDI_TEA_EMPTY           ICON                    "img\\tea-16-empty.ico"
-IDI_CHOCO_FULL            ICON                    "img\\hot-chocolate-16-full.ico"
-IDI_CHOCO_EMPTY           ICON                    "img\\hot-chocolate-16-empty.ico"
+IDI_APP_ICON            ICON                    "img/appicon.ico"
+IDI_TEA_FULL            ICON                    "img/tea-16-full.ico"
+IDI_TEA_EMPTY           ICON                    "img/tea-16-empty.ico"
+IDI_CHOCO_FULL            ICON                    "img/hot-chocolate-16-full.ico"
+IDI_CHOCO_EMPTY           ICON                    "img/hot-chocolate-16-empty.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
