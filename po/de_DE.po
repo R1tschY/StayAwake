@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-19 21:40+0100\n"
+"POT-Creation-Date: 2016-03-19 22:08+0100\n"
 "PO-Revision-Date: 2016-03-19 21:50+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,12 +18,12 @@ msgstr ""
 "X-Generator: Poedit 1.8.4\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: stayawake.cpp:135
+#: stayawake.cpp:134
 msgctxt "AboutDialog"
 msgid "Info about ..."
 msgstr "Über ..."
 
-#: stayawake.cpp:138
+#: stayawake.cpp:137
 msgid ""
 "This is free software and uses the <a>GNU General Public License Version 3</"
 "a>."
@@ -31,47 +31,47 @@ msgstr ""
 "Dieses Programm ist freie Software und steht unter der <a>GNU General Public "
 "License Version 3</a>."
 
-#: stayawake.cpp:187
+#: stayawake.cpp:186
 msgid "Info ..."
 msgstr "&Über ..."
 
-#: stayawake.cpp:189
+#: stayawake.cpp:188
 msgid "Options"
 msgstr "Einstellungen"
 
-#: stayawake.cpp:190
+#: stayawake.cpp:189
 msgid "Start with Windows"
 msgstr "Mit Windows starten"
 
-#: stayawake.cpp:191
+#: stayawake.cpp:190
 msgid "Activate with fullscreen window"
 msgstr "Bei Vollbildfenster aktivieren"
 
-#: stayawake.cpp:193
+#: stayawake.cpp:192
 msgid "Choco icon"
 msgstr "Kakao-Symbol"
 
-#: stayawake.cpp:194
+#: stayawake.cpp:193
 msgid "Tea icon"
 msgstr "Tee-Symbol"
 
-#: stayawake.cpp:195
+#: stayawake.cpp:194
 msgid "Set icon"
 msgstr "Symbol setzen"
 
-#: stayawake.cpp:197 stayawake.cpp:243
+#: stayawake.cpp:196 stayawake.cpp:242
 msgid "Activate"
 msgstr "Aktivieren"
 
-#: stayawake.cpp:199
+#: stayawake.cpp:198
 msgid "Quit"
 msgstr "&Beenden"
 
-#: stayawake.cpp:232
+#: stayawake.cpp:231
 msgid "Automatic activated"
 msgstr "Automatisch aktiviert"
 
-#: stayawake.cpp:238
+#: stayawake.cpp:237
 msgid "Deactivate"
 msgstr "Deaktivieren"
 
