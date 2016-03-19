@@ -5,6 +5,7 @@ set(Boost_USE_MULTITHREADED ON)
 find_package(Boost REQUIRED COMPONENTS filesystem locale system)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 link_libraries(${Boost_LIBRARIES})
+message(STATUS "Boost include at ${Boost_INCLUDE_DIRS}")
 
 # config.h
 configure_file (
@@ -46,8 +47,14 @@ function(add_gettext_sources _domain_name)
 
     get_filename_component(_pot_file ${${prefix}_OUTPUT} ABSOLUTE)
 
+    set(_po_rela_SOURCES)
+    foreach (_po_SOURCE ${${prefix}_SOURCES})
+      file(RELATIVE_PATH _po_rela_SOURCE ${CMAKE_CURRENT_SOURCE_DIR} ${_po_SOURCE})
+      set(_po_rela_SOURCES ${_po_rela_SOURCES} ${_po_rela_SOURCE})
+    endforeach()
+
     add_custom_command(OUTPUT ${_pot_file}
-        COMMAND ${XGETTEXT_EXE} -o ${_pot_file} ${${prefix}_SOURCES}
+        COMMAND ${XGETTEXT_EXE} -o ${_pot_file} ${_po_rela_SOURCES}
                   -c++
                   --keyword=gettext:1 --keyword=pgettext:1c,2
                   --keyword=ngettext:1,2 --keyword=npgettext:1c,2,3
@@ -55,7 +62,7 @@ function(add_gettext_sources _domain_name)
                   --keyword=N_:1,2 --keyword=NP_:1c,2,3
                   --package-name=${PROJECT_NAME} --package-name=${PROJECT_VERSION}
         DEPENDS ${${prefix}_SOURCES}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Extract translatable messages to ${_pot_file}"
     )
     add_custom_target(${_domain_name}_pot ALL DEPENDS ${_pot_file})
