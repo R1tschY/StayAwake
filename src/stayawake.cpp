@@ -161,13 +161,13 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 StayAwakeUi::StayAwakeUi(HINSTANCE hinstance) :
-  Windows::Window(Window::Type::Normal),
+  TopLevelWindow(TopLevelWindow::Type::Normal),
 
   hinstance_(hinstance),
   trayicon_(),
   coffein_(0)
 {
-  create(nullptr, wstring_literal("StayAwake"));
+  create(nullptr, L"StayAwake");
 }
 
 void StayAwakeUi::onCreate()
@@ -182,13 +182,13 @@ void StayAwakeUi::onCreate()
   IconEntry icon = properties_.GetIcon();
   onIconSet(icon);
 
-  popup_menu_ = Windows::Menu::createPopupMenu();
+  popup_menu_ = Windows::createPopupMenu();
   popup_menu_.addEntry(InfoEntry, _(L"Info ..."));
   popup_menu_.addSeperator();
   popup_menu_.addEntry(OptionsEntry, _(L"Options"), Windows::MenuEntryFlags::Disabled);
   popup_menu_.addEntry(AutostartEntry, _(L"Start with Windows"), autostart_flags);
   popup_menu_.addEntry(AutomaticEntry, _(L"Activate with fullscreen window"), automatic_flags);
-  icon_menu_ = Windows::Menu::createPopupMenu();
+  icon_menu_ = Windows::createPopupMenu();
   icon_menu_.addEntry(ChocoEntry, _(L"Choco icon"), icon == ChocoEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked );
   icon_menu_.addEntry(TeaEntry, _(L"Tea icon"), icon == TeaEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked);
   popup_menu_.addMenu(_(L"Set icon"), icon_menu_);
@@ -196,9 +196,12 @@ void StayAwakeUi::onCreate()
   popup_menu_.addEntry(SetManuellEntry, _(L"Activate"));
   popup_menu_.addSeperator();
   popup_menu_.addEntry(ExitEntry, _(L"Quit"));
-  trayicon_.add(getNativeHandle(), inactive_icon_, wstring_literal(PROJECT_NAME));
 
-  coffein_.setParent(getNativeHandle());
+  trayicon_.setIcon(inactive_icon_.getHICON());
+  trayicon_.setToolTip(CPP_TO_WIDESTRING(PROJECT_NAME));
+  trayicon_.add(getHWND());
+
+  coffein_.setParent(getHWND());
   coffein_.setAutomatic(properties_.GetAutomatic());
   coffein_.update();
 }
@@ -229,18 +232,18 @@ StayAwakeUi::onStateChanged()
   if (coffein_.getAutomaticState())
   {
     popup_menu_.modifyEntry(SetManuellEntry, _(L"Automatic activated"), MenuEntryFlags::Grayed);
-    trayicon_.setIcon(active_icon_);
+    trayicon_.setIcon(active_icon_.getHICON());
     return;
   }
 
   if (coffein_.getManuellState()) {
     popup_menu_.modifyEntry(SetManuellEntry, _(L"Deactivate"), MenuEntryFlags::Enabled);
-    trayicon_.setIcon(active_icon_);
+    trayicon_.setIcon(active_icon_.getHICON());
   }
   else
   {
     popup_menu_.modifyEntry(SetManuellEntry, _(L"Activate"), MenuEntryFlags::Enabled);
-    trayicon_.setIcon(inactive_icon_);
+    trayicon_.setIcon(inactive_icon_.getHICON());
   }
 }
 
@@ -262,13 +265,13 @@ void StayAwakeUi::onIconSet(IconEntry icon)
   switch(icon)
   {
   case ChocoEntry:
-    active_icon_ = loadResourceIcon(hinstance_, IDI_CHOCO_FULL, 0);
-    inactive_icon_ = loadResourceIcon(hinstance_, IDI_CHOCO_EMPTY, 0);
+    active_icon_ = IconView(loadResourceIcon(hinstance_, IDI_CHOCO_FULL, 0));
+    inactive_icon_ = IconView(loadResourceIcon(hinstance_, IDI_CHOCO_EMPTY, 0));
     break;
 
   case TeaEntry:
-    active_icon_ = loadResourceIcon(hinstance_, IDI_TEA_FULL, 0);
-    inactive_icon_ = loadResourceIcon(hinstance_, IDI_TEA_EMPTY, 0);
+    active_icon_ = IconView(loadResourceIcon(hinstance_, IDI_TEA_FULL, 0));
+    inactive_icon_ = IconView(loadResourceIcon(hinstance_, IDI_TEA_EMPTY, 0));
     break;
   }
 
@@ -281,15 +284,15 @@ void StayAwakeUi::onIconSet(IconEntry icon)
 
 void StayAwakeUi::onAbout()
 {
-  DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), getNativeHandle(), About);
+  DialogBox(hinstance_, MAKEINTRESOURCE(IDD_ABOUTBOX), getHWND(), About);
 }
 
 void StayAwakeUi::onContextMenu(int x, int y)
 {
-  SetForegroundWindow(getNativeHandle());
+  SetForegroundWindow(getHWND());
   TrackPopupMenu(popup_menu_.getHMENU(),
 		  TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-                 x, y, 0, getNativeHandle(), nullptr);
+                 x, y, 0, getHWND(), nullptr);
 }
 
 LRESULT
@@ -351,7 +354,7 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
 
     // Messages des TrayIcon
   case Windows::TrayIcon::MessageId:
-    trayicon_.handleMessage(wparam, lparam, [=](UINT timsg, int x, int y)
+    trayicon_.handleMessage(wparam, lparam, [=](UINT timsg, POINT)
     {
       POINT pt;
       GetCursorPos(&pt);
@@ -376,5 +379,5 @@ StayAwakeUi::onMessage(UINT msg, WPARAM wparam, LPARAM lparam)
     break;
   }
 
-  return Window::onMessage(msg, wparam, lparam);
+  return TopLevelWindow::onMessage(msg, wparam, lparam);
 }

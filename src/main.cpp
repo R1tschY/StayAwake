@@ -23,7 +23,8 @@
 #include <iostream>
 
 #include <cpp-utils/strings/string_literal.h>
-#include <lightports/base/application.h>
+#include <cpp-utils/preprocessor.h>
+#include <lightports/user/application.h>
 #include <boost/filesystem.hpp>
 #include "gettext.h"
 
@@ -44,7 +45,7 @@ static int run()
 
   try 
   {
-    StayAwakeUi ui(Windows::Application::getInstance());
+    StayAwakeUi ui(Windows::Application::getHINSTANCE());
     if (!ui.okay())
     {
       // TODO: log failure
@@ -76,6 +77,6 @@ int APIENTRY wWinMain(HINSTANCE hInst,
   UNREFERENCED_PARAMETER(lpCmdLine);
   UNREFERENCED_PARAMETER(nCmdShow);
 
-  Windows::Application app(wstring_literal(PROJECT_NAME), hInst);
+  Windows::Application app(CPP_TO_WIDESTRING(PROJECT_NAME), hInst);
   return app.run(run);
 }

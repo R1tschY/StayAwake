@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the 0.4.2 package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.4.1\n"
+"Project-Id-Version: 0.4.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-19 22:12+0100\n"
+"POT-Creation-Date: 2017-04-01 19:57+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Set icon"
 msgstr ""
 
-#: stayawake.cpp:196 stayawake.cpp:242
+#: stayawake.cpp:196 stayawake.cpp:245
 msgid "Activate"
 msgstr ""
 
@@ -64,10 +64,10 @@ msgstr ""
 msgid "Quit"
 msgstr ""
 
-#: stayawake.cpp:231
+#: stayawake.cpp:234
 msgid "Automatic activated"
 msgstr ""
 
-#: stayawake.cpp:237
+#: stayawake.cpp:240
 msgid "Deactivate"
 msgstr ""

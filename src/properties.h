@@ -21,7 +21,7 @@
 #define __PROPERTIES_H__
 
 #include "stdafx.h"
-#include <lightports/base/configfile.h>
+#include <lightports/extra/configfile.h>
 
 enum IconEntry {
   ChocoEntry = 1500,

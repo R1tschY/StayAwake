@@ -21,11 +21,11 @@
 
 #include "stdafx.h"
 
-#include <lightports/extra/menu.h>
-#include <lightports/extra/icon.h>
-#include <lightports/extra/trayicon.h>
-#include <lightports/base/timeout.h>
-#include <lightports/controls/window.h>
+#include <lightports/user/menu.h>
+#include <lightports/user/icon.h>
+#include <lightports/shell/trayicon.h>
+#include <lightports/user/timeout.h>
+#include <lightports/controls/toplevelwindow.h>
 
 #include "properties.h"
 #include "resource.h"
@@ -66,7 +66,7 @@ private:
   void updateTimer();
 };
 
-class StayAwakeUi : public Windows::Window
+class StayAwakeUi : public Windows::TopLevelWindow
 {
 public:
   StayAwakeUi(HINSTANCE hInstance);
@@ -99,8 +99,8 @@ private:
   Windows::Menu popup_menu_;
   Windows::Menu icon_menu_;
 
-  Windows::Icon active_icon_;
-  Windows::Icon inactive_icon_;
+  Windows::IconView active_icon_;
+  Windows::IconView inactive_icon_;
 
   StayAwake coffein_;
   Properties properties_;

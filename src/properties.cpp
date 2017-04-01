@@ -24,7 +24,7 @@
 
 #include "utils.h"
 #include <cpp-utils/preprocessor.h>
-#include <lightports/base/application.h>
+#include <lightports/user/application.h>
 #include <lightports/extra/autostart.h>
 #include <boost/filesystem.hpp>
 
