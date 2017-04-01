@@ -2,9 +2,8 @@
 # Boost
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost REQUIRED COMPONENTS filesystem locale system)
+find_package(Boost REQUIRED COMPONENTS filesystem locale thread system)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
-link_libraries(${Boost_LIBRARIES})
 message(STATUS "Boost include at ${Boost_INCLUDE_DIRS}")
 
 # config.h
@@ -23,8 +22,10 @@ file(GLOB stayawake_PO_FILES "../po/*.po")
 add_executable(stayawake WIN32 ${stayawake_SOURCES} ${stayawake_RESOURCES})
 target_link_libraries(stayawake PRIVATE 
 	cpp-utils 
-	lightports-base lightports-extra lightports-controls 
-        user32 comctl32
+	lightports-user lightports-shell lightports-extra lightports-controls 
+        user32 comctl32 
+        ${Boost_LIBRARIES} 
+        sicuio siculx sicule sicuin sicuuc sicudt iconv
 )
 set_target_properties(stayawake PROPERTIES
 	CXX_STANDARD 14
@@ -140,8 +141,15 @@ add_gettext_translations(
 
 
 # install
-install(TARGETS stayawake DESTINATION .)
+install(TARGETS stayawake
+    DESTINATION .
+)
 install(DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/locale" DESTINATION .)
+INSTALL(CODE "
+    include(BundleUtilities)
+    set(gp_tool objdump)
+    fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/StayAwake.exe\" \"\" \"\")
+")
 
 # installer
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/setup ${CMAKE_MODULE_PATH})

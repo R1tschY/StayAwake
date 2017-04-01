@@ -12,13 +12,13 @@ cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.2)
 cmake_policy(SET CMP0048 NEW)
 
-project(StayAwake VERSION 0.4.1 LANGUAGES CXX)
+project(StayAwake VERSION 0.4.2 LANGUAGES CXX)
 set(PROJECT_AUTHOR "Richard Liebscher")
 set(PROJECT_DESCRIPTION "status icon for blocking screensaver and standby in Windows")
 set(PROJECT_DESCRIPTION_DE "Statusymbol zur Blockieren von Screensaver und Standby in Windows")
 set(PROJECT_COPYRIGHT "Copyright (C) 2010,2015,2016 Richard Liebscher <r1tschy@yahoo.de>")
 set(PROJECT_URL "https://github.com/R1tschY/StayAwake")
-set(PROJECT_LONGVERSION "${PROJECT_VERSION}.0.0")
+set(PROJECT_LONGVERSION "${PROJECT_VERSION}.0")
 string(REGEX REPLACE "\\." "," PROJECT_VERSIONINFO "${PROJECT_LONGVERSION}")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
@@ -32,6 +32,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-s -O2 -DNDEBUG")
 
 # Windows
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -municode -static-libgcc -static-libstdc++")
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s")
 
 # UNICODE
 add_definitions(-DUNICODE -D_UNICODE)
