@@ -25,7 +25,7 @@ target_link_libraries(stayawake PRIVATE
 	lightports-user lightports-shell lightports-extra lightports-controls 
         user32 comctl32 
         ${Boost_LIBRARIES} 
-        sicuio siculx sicule sicuin sicuuc sicudt iconv
+        -Wl,-Bstatic sicuio siculx sicule sicuin sicuuc sicudt iconv -Wl,-Bdynamic
 )
 set_target_properties(stayawake PROPERTIES
 	CXX_STANDARD 14
@@ -150,6 +150,8 @@ INSTALL(CODE "
     set(gp_tool objdump)
     fixup_bundle(\"\${CMAKE_INSTALL_PREFIX}/StayAwake.exe\" \"\" \"\")
 ")
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../GPL-3.0.txt" DESTINATION .)
+
 
 # installer
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/setup ${CMAKE_MODULE_PATH})
