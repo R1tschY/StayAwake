@@ -2,7 +2,7 @@
 # Boost
 set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
-find_package(Boost REQUIRED COMPONENTS filesystem locale thread system)
+find_package(Boost REQUIRED COMPONENTS filesystem thread system)
 include_directories(SYSTEM ${Boost_INCLUDE_DIRS})
 message(STATUS "Boost include at ${Boost_INCLUDE_DIRS}")
 
@@ -25,7 +25,7 @@ target_link_libraries(stayawake PRIVATE
 	lightports-user lightports-shell lightports-extra lightports-controls 
         user32 comctl32 
         ${Boost_LIBRARIES} 
-        -Wl,-Bstatic sicuio siculx sicule sicuin sicuuc sicudt iconv -Wl,-Bdynamic
+        -Wl,-Bstatic intl iconv -Wl,-Bdynamic
 )
 set_target_properties(stayawake PROPERTIES
 	CXX_STANDARD 14

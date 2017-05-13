@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.2)
 cmake_policy(SET CMP0048 NEW)
 
-project(StayAwake VERSION 0.4.2 LANGUAGES CXX)
+project(StayAwake VERSION 0.4.3 LANGUAGES CXX)
 set(PROJECT_AUTHOR "Richard Liebscher")
 set(PROJECT_DESCRIPTION "status icon for blocking screensaver and standby in Windows")
 set(PROJECT_DESCRIPTION_DE "Statusymbol zur Blockieren von Screensaver und Standby in Windows")

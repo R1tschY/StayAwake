@@ -25,23 +25,13 @@
 #include <cpp-utils/strings/string_literal.h>
 #include <cpp-utils/preprocessor.h>
 #include <lightports/user/application.h>
-#include <boost/filesystem.hpp>
 #include "gettext.h"
 
 using namespace Windows;
 
 static int run()
 {
-  using namespace boost::locale;
-
-  boost::filesystem::path local_path = Application::getExecutablePath();
-  local_path.remove_filename();
-  local_path /= L"locale";
-
-  generator gen;
-  gen.add_messages_path(local_path.string());
-  gen.add_messages_domain(PROJECT_NAME);
-  std::locale::global(gen(""));
+  init_gettext();
 
   try 
   {

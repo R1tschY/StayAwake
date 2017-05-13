@@ -131,10 +131,10 @@ About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
   switch (message)
   {
   case WM_INITDIALOG: {
-    SetWindowTextW(hDlg, P_(L"AboutDialog", L"Info about ...").c_str());
+    SetWindowTextW(hDlg, _("Info about ...").c_str());
     SetDlgItemTextW(hDlg, IDC_VERSION, CPP_TO_WIDESTRING(PROJECT_NAME) L", Version " CPP_TO_WIDESTRING(PROJECT_VERSION));
     SetDlgItemTextW(hDlg, IDC_COPYRIGHT, CPP_TO_WIDESTRING(PROJECT_COPYRIGHT));
-    SetDlgItemTextW(hDlg, IDC_GPL, _(L"This is free software and uses the <a>GNU General Public License Version 3</a>.").c_str());
+    SetDlgItemTextW(hDlg, IDC_GPL, _("This is free software and uses the <a>GNU General Public License Version 3</a>.").c_str());
     return (INT_PTR)TRUE;
   }
 
@@ -183,19 +183,19 @@ void StayAwakeUi::onCreate()
   onIconSet(icon);
 
   popup_menu_ = Windows::createPopupMenu();
-  popup_menu_.addEntry(InfoEntry, _(L"Info ..."));
+  popup_menu_.addEntry(InfoEntry, _("Info ..."));
   popup_menu_.addSeperator();
-  popup_menu_.addEntry(OptionsEntry, _(L"Options"), Windows::MenuEntryFlags::Disabled);
-  popup_menu_.addEntry(AutostartEntry, _(L"Start with Windows"), autostart_flags);
-  popup_menu_.addEntry(AutomaticEntry, _(L"Activate with fullscreen window"), automatic_flags);
+  popup_menu_.addEntry(OptionsEntry, _("Options"), Windows::MenuEntryFlags::Disabled);
+  popup_menu_.addEntry(AutostartEntry, _("Start with Windows"), autostart_flags);
+  popup_menu_.addEntry(AutomaticEntry, _("Activate with fullscreen window"), automatic_flags);
   icon_menu_ = Windows::createPopupMenu();
-  icon_menu_.addEntry(ChocoEntry, _(L"Choco icon"), icon == ChocoEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked );
-  icon_menu_.addEntry(TeaEntry, _(L"Tea icon"), icon == TeaEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked);
-  popup_menu_.addMenu(_(L"Set icon"), icon_menu_);
+  icon_menu_.addEntry(ChocoEntry, _("Choco icon"), icon == ChocoEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked );
+  icon_menu_.addEntry(TeaEntry, _("Tea icon"), icon == TeaEntry ? Windows::MenuEntryFlags::Checked : Windows::MenuEntryFlags::Unchecked);
+  popup_menu_.addMenu(_("Set icon"), icon_menu_);
   popup_menu_.addSeperator();
-  popup_menu_.addEntry(SetManuellEntry, _(L"Activate"));
+  popup_menu_.addEntry(SetManuellEntry, _("Activate"));
   popup_menu_.addSeperator();
-  popup_menu_.addEntry(ExitEntry, _(L"Quit"));
+  popup_menu_.addEntry(ExitEntry, _("Quit"));
 
   trayicon_.setIcon(inactive_icon_.getHICON());
   trayicon_.setToolTip(CPP_TO_WIDESTRING(PROJECT_NAME));
@@ -231,18 +231,18 @@ StayAwakeUi::onStateChanged()
 {
   if (coffein_.getAutomaticState())
   {
-    popup_menu_.modifyEntry(SetManuellEntry, _(L"Automatic activated"), MenuEntryFlags::Grayed);
+    popup_menu_.modifyEntry(SetManuellEntry, _("Automatic activated"), MenuEntryFlags::Grayed);
     trayicon_.setIcon(active_icon_.getHICON());
     return;
   }
 
   if (coffein_.getManuellState()) {
-    popup_menu_.modifyEntry(SetManuellEntry, _(L"Deactivate"), MenuEntryFlags::Enabled);
+    popup_menu_.modifyEntry(SetManuellEntry, _("Deactivate"), MenuEntryFlags::Enabled);
     trayicon_.setIcon(active_icon_.getHICON());
   }
   else
   {
-    popup_menu_.modifyEntry(SetManuellEntry, _(L"Activate"), MenuEntryFlags::Enabled);
+    popup_menu_.modifyEntry(SetManuellEntry, _("Activate"), MenuEntryFlags::Enabled);
     trayicon_.setIcon(inactive_icon_.getHICON());
   }
 }
