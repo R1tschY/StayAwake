@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.4.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-13 20:40+0200\n"
+"POT-Creation-Date: 2019-01-27 17:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,41 +32,37 @@ msgid "Info ..."
 msgstr ""
 
 #: stayawake.cpp:188
-msgid "Options"
-msgstr ""
-
-#: stayawake.cpp:189
 msgid "Start with Windows"
 msgstr ""
 
-#: stayawake.cpp:190
+#: stayawake.cpp:189
 msgid "Activate with fullscreen window"
 msgstr ""
 
-#: stayawake.cpp:192
+#: stayawake.cpp:191
 msgid "Choco icon"
 msgstr ""
 
-#: stayawake.cpp:193
+#: stayawake.cpp:192
 msgid "Tea icon"
 msgstr ""
 
-#: stayawake.cpp:194
+#: stayawake.cpp:193
 msgid "Set icon"
 msgstr ""
 
-#: stayawake.cpp:196 stayawake.cpp:245
+#: stayawake.cpp:195 stayawake.cpp:246
 msgid "Activate"
 msgstr ""
 
-#: stayawake.cpp:198
+#: stayawake.cpp:197
 msgid "Quit"
 msgstr ""
 
-#: stayawake.cpp:234
+#: stayawake.cpp:235
 msgid "Automatic activated"
 msgstr ""
 
-#: stayawake.cpp:240
+#: stayawake.cpp:241
 msgid "Deactivate"
 msgstr ""

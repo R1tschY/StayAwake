@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-13 19:10+0200\n"
+"POT-Creation-Date: 2019-01-27 17:26+0100\n"
 "PO-Revision-Date: 2017-05-13 20:37+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -35,44 +35,43 @@ msgid "Info ..."
 msgstr "&Über ..."
 
 #: stayawake.cpp:188
-msgid "Options"
-msgstr "Einstellungen"
-
-#: stayawake.cpp:189
 msgid "Start with Windows"
 msgstr "Mit Windows starten"
 
-#: stayawake.cpp:190
+#: stayawake.cpp:189
 msgid "Activate with fullscreen window"
 msgstr "Bei Vollbildfenster aktivieren"
 
-#: stayawake.cpp:192
+#: stayawake.cpp:191
 msgid "Choco icon"
 msgstr "Kakao-Symbol"
 
-#: stayawake.cpp:193
+#: stayawake.cpp:192
 msgid "Tea icon"
 msgstr "Tee-Symbol"
 
-#: stayawake.cpp:194
+#: stayawake.cpp:193
 msgid "Set icon"
 msgstr "Symbol setzen"
 
-#: stayawake.cpp:196 stayawake.cpp:245
+#: stayawake.cpp:195 stayawake.cpp:246
 msgid "Activate"
 msgstr "Aktivieren"
 
-#: stayawake.cpp:198
+#: stayawake.cpp:197
 msgid "Quit"
 msgstr "&Beenden"
 
-#: stayawake.cpp:234
+#: stayawake.cpp:235
 msgid "Automatic activated"
 msgstr "Automatisch aktiviert"
 
-#: stayawake.cpp:240
+#: stayawake.cpp:241
 msgid "Deactivate"
 msgstr "Deaktivieren"
+
+#~ msgid "Options"
+#~ msgstr "Einstellungen"
 
 #~ msgid "Hello World!"
 #~ msgstr "Hallo Welt!"

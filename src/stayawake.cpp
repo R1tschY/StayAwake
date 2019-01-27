@@ -185,7 +185,6 @@ void StayAwakeUi::onCreate()
   popup_menu_ = Windows::createPopupMenu();
   popup_menu_.addEntry(InfoEntry, _("Info ..."));
   popup_menu_.addSeperator();
-  popup_menu_.addEntry(OptionsEntry, _("Options"), Windows::MenuEntryFlags::Disabled);
   popup_menu_.addEntry(AutostartEntry, _("Start with Windows"), autostart_flags);
   popup_menu_.addEntry(AutomaticEntry, _("Activate with fullscreen window"), automatic_flags);
   icon_menu_ = Windows::createPopupMenu();
