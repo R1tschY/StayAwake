@@ -1,7 +1,7 @@
 /*
  * This file is part of StayAwake.
  *
- *  Copyright (C) 2010, 2015  Richard Liebscher <r1tschy@yahoo.de>
+ *  Copyright (C) 2019  Richard Liebscher <r1tschy@yahoo.de>
  *
  *  StayAwake is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
