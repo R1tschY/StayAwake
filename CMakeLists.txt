@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.0)
 cmake_policy(VERSION 3.2)
 cmake_policy(SET CMP0048 NEW)
 
-project(StayAwake VERSION 0.4.3 LANGUAGES CXX)
+project(StayAwake VERSION 0.5.0 LANGUAGES CXX)
 set(PROJECT_AUTHOR "Richard Liebscher")
 set(PROJECT_DESCRIPTION "status icon for blocking screensaver and standby in Windows")
 set(PROJECT_DESCRIPTION_DE "Statusymbol zur Blockieren von Screensaver und Standby in Windows")
@@ -37,11 +37,8 @@ set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} -s")
 # UNICODE
 add_definitions(-DUNICODE -D_UNICODE)
 
-# Windows XP
-#add_definitions(-DNTDDI_VERSION=0x05010300 -D_WIN32_WINNT=0x0501 -DWINVER=0x0501 -D_WIN32_IE=0x0700)
-
-# Windows Vista
-add_definitions(-DNTDDI_VERSION=0x06000000 -D_WIN32_WINNT=0x0600 -DWINVER=0x0600 -D_WIN32_IE=0x0700)
+# Windows 7
+add_definitions(-DNTDDI_VERSION=0x06010000 -D_WIN32_WINNT=0x0601 -DWINVER=0x0601 -D_WIN32_IE=0x0A00)
 
 # Boost options
 set(Boost_USE_STATIC_LIBS ON)
