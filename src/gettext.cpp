@@ -1,11 +1,13 @@
-#include "gettext.h"
-
-#include <iostream>
 #include <libintl.h>
+
+#include <cstdio>  // libintl.h defines macros for *printf. cstdio undefines these.
+#include <iostream>
+
 #include <boost/filesystem.hpp>
 #include <lightports/extra/charcodecs.h>
 #include <lightports/user/application.h>
 
+#include "gettext.h"
 #include "config.h"
 
 void init_gettext()
