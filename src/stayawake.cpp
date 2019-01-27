@@ -203,6 +203,7 @@ void StayAwakeUi::onCreate()
 
   coffein_.setParent(getHWND());
   coffein_.setAutomatic(properties_.GetAutomatic());
+  coffein_.setManuellState(properties_.GetLastState());
   coffein_.update();
 }
 
@@ -223,6 +224,7 @@ StayAwakeUi::onManuellSet(bool value)
   if (value == coffein_.getManuellState())
     return;
 
+  properties_.SetLastState(value);
   coffein_.setManuellState(value);
 }
 

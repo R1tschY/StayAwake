@@ -44,11 +44,16 @@ public:
   void SetIcon(IconEntry value);
   IconEntry GetIcon() const { return icon_; }
 
+  static const bool LastStateDefault = false;
+  void SetLastState(bool value);
+  bool GetLastState() const { return _last_state; }
+
 private:
   Windows::ConfigFile _configfile;
   
   bool _startup;
   bool _automatic;
+  bool _last_state;
   IconEntry icon_;
 };
 

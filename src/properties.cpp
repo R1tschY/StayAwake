@@ -32,13 +32,21 @@ namespace fs = boost::filesystem;
 
 Properties::Properties() 
 {
-  fs::path path = Windows::Application::getConfigPath();
-  path /= CPP_TO_WIDESTRING(PROJECT_NAME) L".ini";
+  // config dir
+  fs::path configdir = Windows::Application::getConfigPath();
+  configdir /= CPP_TO_WIDESTRING(PROJECT_NAME);
+  fs::create_directories(configdir);
 
-  // Load Configuration
-  _configfile.loadFromFile(path.wstring());
+  // config file
+  fs::path configfile = configdir / CPP_TO_WIDESTRING(PROJECT_NAME) L".ini";
+
+  // load config
+  _configfile.loadFromFile(configfile.wstring());
+
+  // load properties
   _automatic = _configfile.getInteger(L"common", L"automatic", AutomaticDefault);
   icon_ = static_cast<IconEntry>(_configfile.getInteger(L"common", L"icon", IconDefault));
+  _last_state = _configfile.getInteger(L"common", L"state", LastStateDefault);
   _startup = Windows::isProgramInAutostart();
 }
 
@@ -69,3 +77,13 @@ void Properties::SetIcon(IconEntry value)
   icon_ = value;
   _configfile.setInteger(L"common", L"icon", icon_);
 }
+
+void Properties::SetLastState(bool value)
+{
+  if (value == _last_state)
+    return;
+
+  _last_state = value;
+  _configfile.setInteger(L"common", L"state", _last_state);
+}
+
