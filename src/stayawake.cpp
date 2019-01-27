@@ -204,6 +204,8 @@ void StayAwakeUi::onCreate()
   coffein_.setAutomatic(properties_.GetAutomatic());
   coffein_.setManuellState(properties_.GetLastState());
   coffein_.update();
+
+  onStateChanged();
 }
 
 StayAwakeUi::~StayAwakeUi()
@@ -234,17 +236,20 @@ StayAwakeUi::onStateChanged()
   {
     popup_menu_.modifyEntry(SetManuellEntry, _("Automatic activated"), MenuEntryFlags::Grayed);
     trayicon_.setIcon(active_icon_.getHICON());
+    trayicon_.setToolTip(CPP_TO_WIDESTRING(PROJECT_NAME) + _(" (automatically activated)"));
     return;
   }
 
   if (coffein_.getManuellState()) {
     popup_menu_.modifyEntry(SetManuellEntry, _("Deactivate"), MenuEntryFlags::Enabled);
     trayicon_.setIcon(active_icon_.getHICON());
+    trayicon_.setToolTip(CPP_TO_WIDESTRING(PROJECT_NAME) + _(" (active)"));
   }
   else
   {
     popup_menu_.modifyEntry(SetManuellEntry, _("Activate"), MenuEntryFlags::Enabled);
     trayicon_.setIcon(inactive_icon_.getHICON());
+    trayicon_.setToolTip(CPP_TO_WIDESTRING(PROJECT_NAME) + _(" (inactive)"));
   }
 }
 
@@ -258,7 +263,7 @@ void StayAwakeUi::onAutomaticSet(bool value)
 {
   properties_.SetAutomatic(value);
   coffein_.setAutomatic(value);
-  popup_menu_.check(AutomaticEntry, value);
+  popup_menu_.check(AutomaticEntry, value);  
 }
 
 void StayAwakeUi::onIconSet(IconEntry icon)
