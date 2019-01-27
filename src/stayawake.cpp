@@ -46,7 +46,9 @@ StayAwake::StayAwake(HWND hwnd) :
 
   hwnd_(hwnd),
   timeout_([=](){ update(); }, -1)
-{ }
+{
+  timeout_.setInterval(10 * 1000);
+}
 
 StayAwake::~StayAwake()
 {
@@ -82,13 +84,10 @@ void StayAwake::updateTimer()
 
   is_timer_active_ = state;
 
-  if (state)
-  {
-    timeout_.setInterval(30 * 1000);
-  }
-  else
-  {
-    timeout_.setInterval(-1);
+  if (state) {
+    timeout_.start();
+  } else {
+    timeout_.stop();
   }
 }
 
